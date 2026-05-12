@@ -69,55 +69,103 @@ if df is None:
 else:
     tab1, tab2 = st.tabs(["👤 Öğrenci Sorgulama", "🏫 Kurum ve Öğretmen Paneli"])
 
-    # ---------------------------------------------------------
-    # 1. ÖĞRENCİ SORGULAMA TABI
-    # ---------------------------------------------------------
-    with tab1:
-        st.markdown(f"### 🔍 {secilen_sinif_str} Sonuç Sorgulama")
-        c1, c2 = st.columns(2)
-        with c1:
-            okul_secim = st.selectbox("Okulunuzu Seçin:", sorted(df['OKUL ADI'].unique()))
-        with c2:
-            no_secim = st.text_input("Öğrenci Numaranız (Örn: 35):").lstrip('0')
+    # --- app.py içindeki tab2 (Kurumsal Panel) bölümüne eklenecek ek özellik ---
 
-        if st.button("Sonucumu Göster", type="primary"):
-            sonuc = df[(df['OKUL ADI'] == okul_secim) & (df['Arama_No'] == no_secim)]
-            if not sonuc.empty:
-                st.balloons()
-                o = sonuc.iloc[0]
+with tab2:
+    sifre = st.text_input("🔐 Kurum Şifresi:", type="password")
+    if sifre == "darder47":
+        st.success("Yetki Onaylandı.")
+        
+        # Filtreleme Seçenekleri
+        kurum_okul = st.selectbox("Görüntülenecek Kurum:", ["Tüm İlçe Listesi"] + sorted(df['OKUL ADI'].unique()))
+        
+        f_df = df if kurum_okul == "Tüm İlçe Listesi" else df[df['OKUL ADI'] == kurum_okul]
+        
+        # 2. AŞAMA İÇİN BARAJ FİLTRESİ (Sadece Finalistlerin Belgesini Çıkarmak İçin)
+        st.divider()
+        st.subheader("🎟️ 2. Aşama Sınav Giriş Belgeleri")
+        st.info("Sadece 2. aşamaya girmeye hak kazanan (barajı geçen) öğrencilerin belgeleri listelenir.")
+        
+        baraj_puani = st.number_input("Giriş Belgesi İçin Baraj Puanı:", value=75)
+        belge_df = f_df[f_df['Puan'] >= baraj_puani]
+        
+        if belge_df.empty:
+            st.warning("Bu okulda veya sınıfta belirlenen barajı geçen öğrenci bulunamadı.")
+        else:
+            st.write(f"Toplam {len(belge_df)} öğrenci için belge hazırlanabilir.")
+            
+            # GİRİŞ BELGESİ İÇİN DİNAMİK BİLGİLER
+            c_giris1, c_giris2 = st.columns(2)
+            sinav_yeri = c_giris1.text_input("Sınav Bina Adı:", value="Dargeçit Anadolu Lisesi")
+            sinav_tarihi = c_giris2.text_input("Sınav Tarihi ve Saati:", value="18 Mayıs 2026 - 10:00")
+
+            # --- PROFESYONEL GİRİŞ BELGESİ HTML MOTORU ---
+            # (Bu şablon yönetici panelindekiyle aynıdır, idareciler buradan çıktı alabilir)
+            belge_html = """
+            <html><head><meta charset="utf-8"><style>
+                @page { size: A4 portrait; margin: 10mm; }
+                * { box-sizing: border-box; }
+                body { font-family: 'Segoe UI', Arial, sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; }
+                .sayfa { width: 100%; height: 277mm; page-break-after: always; display: flex; flex-direction: column; }
+                .belge-kutu { 
+                    border: 2px solid #111827; border-radius: 12px; padding: 15px; 
+                    margin-bottom: 10mm; height: 128mm; position: relative; overflow: hidden;
+                    background-image: radial-gradient(#f3f4f6 1px, transparent 1px); background-size: 20px 20px;
+                }
+                .baslik-alan { text-align: center; border-bottom: 3px solid #E30A17; padding-bottom: 8px; margin-bottom: 10px; }
+                .baslik-alan h2 { margin: 0; font-size: 17px; font-weight: 900; }
+                .baslik-alan h3 { margin: 4px 0 0 0; color: #E30A17; font-size: 13px; font-weight: 800; }
+                .bilgi-tablo { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+                .bilgi-tablo td { padding: 6px; border: 1px solid #111827; }
+                .bilgi-tablo td:nth-child(odd) { background: #f3f4f6; font-weight: bold; width: 22%; }
+                .bilgi-tablo td:nth-child(even) { font-weight: 800; font-size: 13px; }
+                .salon-vurgu { display: flex; justify-content: space-around; background: #111827; color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+                .kurallar { border: 2px dashed #E30A17; padding: 10px; border-radius: 8px; font-size: 10.5px; line-height: 1.3; }
+            </style></head><body>
+            """
+            
+            for i, row in belge_df.reset_index().iterrows():
+                if i % 2 == 0: belge_html += "<div class='sayfa'>"
                 
-                # Dinamik Yorum Sistemi
-                p = o['Puan']
-                if p >= 85: yr = "🌟 Üstün Başarı! Olimpiyat standartlarında bir zekaya sahipsin. 2. Aşamada başarılar!"
-                elif p >= 65: yr = "👍 Çok İyi! Birkaç küçük dikkat hatası dışında hedefine çok yakınsın."
-                elif p >= 40: yr = "📚 Başarılı bir temel. Düzenli soru çözümü ile netlerini hızla artırabilirsin."
-                else: yr = "💪 Bu sınav senin için harika bir tecrübe oldu, çalışmaya devam et!"
-
-                st.markdown(f"""
-                <div style="background:white; padding:30px; border-radius:15px; border-top:8px solid var(--meb-kirmizi); box-shadow:0 10px 30px rgba(0,0,0,0.15);">
-                    <h2 style="color:var(--koyu-siyah); margin:0;">{o['Ad']} {o['Soyad']}</h2>
-                    <p style="color:#555; font-size:18px;"><b>{o['OKUL ADI']}</b> - {o['Sınıf']}/{o['Şube']} | Öğr. No: <b>{o['Öğrenci No']}</b></p>
-                    <div style="background:var(--koyu-siyah); color:white; padding:10px; border-radius:8px; display:inline-block; margin-bottom:20px;">
-                        İlçe Sıralaması: {o['İlçe Sırası']} | Okul Sıralaması: {o['Okul Sırası']}
+                belge_html += f"""
+                <div class="belge-kutu">
+                    <div class="baslik-alan">
+                        <h2>T.C. DARGEÇİT KAYMAKAMLIĞI</h2>
+                        <h3>1. MATEMATİK OLİMPİYATI FİNAL GİRİŞ BELGESİ</h3>
                     </div>
-                    <div style="display:flex; justify-content:space-around; text-align:center; border:2px solid #eee; padding:20px; border-radius:12px;">
-                        <div><p style="margin:0; color:#666;">Doğru</p><h3 style="color:#059669; margin:0;">{o['Doğru']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Yanlış</p><h3 style="color:#E30A17; margin:0;">{o['Yanlış']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Boş</p><h3 style="color:#6b7280; margin:0;">{o['Boş']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Net</p><h3 style="color:#2563eb; margin:0;">{o['Net']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Puan</p><h2 style="color:var(--koyu-siyah); margin:0;">{o['Puan']}</h2></div>
+                    <table class="bilgi-tablo">
+                        <tr><td>Adı Soyadı</td><td>{row['Ad']} {row['Soyad']}</td><td>Öğrenci No</td><td>{row['Öğrenci No']}</td></tr>
+                        <tr><td>Okulu</td><td colspan="3">{row['OKUL ADI']}</td></tr>
+                        <tr><td>Sınıf / Şube</td><td colspan="3">{row['Sınıf']} / {row['Şube']}</td></tr>
+                    </table>
+                    <div style="background:#f3f4f6; padding:8px; border-radius:8px; text-align:center; margin-bottom:10px; border:1px solid #ccc;">
+                        <b>Sınav Yeri:</b> {sinav_yeri} | <b>Tarih:</b> {sinav_tarihi}
                     </div>
-                    <div style="background:#fff5f5; padding:15px; border-radius:8px; border-left:5px solid var(--meb-kirmizi); margin-top:20px;">
-                        <p style="margin:0; font-style:italic;"><b>Analiz:</b> {yr}</p>
+                    <div class="salon-vurgu">
+                        <span>SALON ADI: {row.get('Salon Adı', 'Tanımsız')}</span>
+                        <span>SIRA NO: {row.get('Sıra No', 'Tanımsız')}</span>
+                    </div>
+                    <div class="kurallar">
+                        <b style="color:#E30A17;">SINAV KURALLARI:</b>
+                        <ul>
+                            <li>Sınava gelirken bu belgeyi ve <b>Nüfus Cüzdanınızı</b> mutlaka getiriniz.</li>
+                            <li>Sınav klasik (açık uçlu) sorulardan oluşur. Kendi kaleminizi ve silginizi getirmelisiniz.</li>
+                            <li>Sınav esnasında silgi vb. alışverişi kesinlikle yasaktır.</li>
+                        </ul>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.error("❌ Kayıt bulunamadı. Lütfen okul ve numara bilgilerinizi kontrol edin.")
+                """
+                if i % 2 == 1 or i == len(belge_df) - 1: belge_html += "</div>"
 
-    # ---------------------------------------------------------
-    # 2. ÖĞRETMEN VE MÜDÜR PANELİ (PDF AKTARIM)
-    # ---------------------------------------------------------
+            belge_html += "</body></html>"
+            
+            st.download_button(
+                label=f"🖨️ {kurum_okul} Giriş Belgelerini PDF Hazırla",
+                data=belge_html,
+                file_name=f"Giris_Belgeleri_{kurum_okul}.html",
+                mime="text/html",
+                use_container_width=True
+            )
     with tab2:
         st.markdown(f"### 🏫 {secilen_sinif_str} Kurumsal Raporlama")
         st.info("⚠️ Diğer sınıfların listesini görmek için sol taraftaki **'SINIF SEÇİNİZ'** menüsünü kullanın.")
