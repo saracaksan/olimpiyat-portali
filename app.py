@@ -4,507 +4,170 @@ import io
 import ast
 import os
 
-# --- SAYFA AYARLARI ---
+# --- EN YÜKSEK KALİTE SAYFA AYARLARI ---
 st.set_page_config(page_title="1. Dargeçit Matematik Olimpiyatı Portalı", layout="wide", page_icon="🥇")
 
-# --- GELİŞMİŞ KURUMSAL CSS ---
-st.markdown("""
-    <style>import streamlit as st
-import pandas as pd
-import io
-import ast
-import os
-
-# --- SAYFA AYARLARI ---
-st.set_page_config(page_title="1. Dargeçit Matematik Olimpiyatı Portalı", layout="wide", page_icon="🥇")
-
-# --- PROFESYONEL TASARIM (CSS) ---
+# --- KRİSTAL NETLİĞİNDE KURUMSAL CSS ---
 st.markdown("""
     <style>
     :root {
-        --meb-kirmizi: #E30A17;
-        --koyu-siyah: #111827;
-        --acik-gri: #f3f4f6;
+        --meb-red: #E30A17;
+        --navy: #111827;
+        --light-gray: #f8fafc;
     }
-    .main { background-color: var(--acik-gri); }
-    .header-banner { 
-        background-color: white; padding: 25px; border-bottom: 5px solid var(--meb-kirmizi); 
-        border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; 
+    .main { background-color: var(--light-gray); }
+    
+    /* Yazı Netliği İçin Özel Ayar */
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* Üst Banner Tasarımı */
+    .header-box {
+        background: linear-gradient(135deg, white 0%, #fff5f5 100%);
+        padding: 30px; border-bottom: 8px solid var(--meb-red);
+        border-radius: 15px; margin-bottom: 35px; text-align: center;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
-    .header-banner h1 { color: var(--koyu-siyah); font-weight: 800; font-size: 30px; margin-bottom: 5px; }
-    .header-banner h3 { color: var(--meb-kirmizi); font-weight: 600; font-size: 18px; margin-top: 0; }
+    .header-box h1 { color: var(--navy); font-weight: 900; font-size: 36px; margin: 0; letter-spacing: -1px; }
+    .header-box h3 { color: var(--meb-red); font-weight: 800; font-size: 20px; margin-top: 5px; text-transform: uppercase; }
+
+    /* Sidebar Etiketi */
+    .sidebar-title { color: var(--meb-red); font-weight: 900; font-size: 20px; margin-bottom: 10px; display: block; text-align: center; }
     
-    /* Sol Menü Sınıf Seçimi Vurgusu */
-    .sidebar-label { color: var(--meb-kirmizi); font-weight: bold; font-size: 16px; margin-bottom: 10px; display: block; }
-    
-    /* Buton Tasarımları */
-    .stButton>button { background-color: var(--koyu-siyah); color: white; border-radius: 8px; font-weight: bold; border:none; transition: 0.3s; }
-    .stButton>button:hover { background-color: var(--meb-kirmizi); color: white; transform: translateY(-2px); }
+    /* Sekme Tasarımı */
+    .stTabs [data-baseweb="tab-list"] { gap: 30px; }
+    .stTabs [data-baseweb="tab"] { 
+        height: 55px; background: white; border-radius: 10px 10px 0 0; 
+        font-weight: 800; font-size: 16px; border: 1px solid #ddd;
+    }
+    .stTabs [aria-selected="true"] { background: var(--meb-red) !important; color: white !important; border: none; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- ÜST BAŞLIK ---
-st.markdown("""
-    <div class="header-banner">
-        <h1>🥇 1. DARGEÇİT MATEMATİK OLİMPİYATI</h1>
-        <h3>Sınav Sonuç Sorgulama ve Analiz Sistemi</h3>
-    </div>
-""", unsafe_allow_html=True)
+# --- DETAYLI PEDAGOJİK ANALİZ MOTORU ---
+def ogrenci_analizi_uret(row):
+    p = row['Puan']
+    d = row['Doğru']
+    y = row['Yanlış']
+    b = row['Boş']
+    ad = row['Ad']
+    
+    if p >= 85:
+        return f"Sayın {ad}, sergilediğin üstün performans senin sadece işlem yeteneğini değil, aynı zamanda çok güçlü bir mantıksal muhakeme becerisine sahip olduğunu gösteriyor. {d} doğru sayısıyla olimpiyat standartlarının zirvesindesin. Soruları analiz etme hızın ve doğruluğun takdire şayandır. Bu başarını 2. aşamada da sürdüreceğine inancımız tamdır."
+    elif p >= 65:
+        return f"Başarılı bir sınav çıkardın {ad}. Matematiksel temelinin oldukça sağlam olduğu görülüyor. {y} yanlışın olması, bazı karmaşık sorularda dikkatinin dağıldığını veya zaman yönetiminde ufak sorunlar yaşadığını gösteriyor. Yanlış yaptığın konuların mantığını tekrar gözden geçirirsen, 2. aşamada ilçe derecesi yapman kaçınılmaz olacaktır."
+    elif p >= 40:
+        return f"Matematik yolculuğunda önemli bir adım attın. Sınav sonucun temel kavramlara hakim olduğunu ancak yeni nesil mantık sorularında daha fazla pratik yapman gerektiğini gösteriyor. {b} boşun olması, bilmediğin sorularda risk almaman açısından olumlu olsa da, konu eksiklerini tamamladığında bu potansiyelin çok daha yüksek puanlara dönüşecektir."
+    else:
+        return f"Bu sınav senin için bir tecrübe başlangıcıdır {ad}. {y} yanlışın doğru sayını etkilemiş olması, soruları çözerken daha dikkatli olman ve bol bol deneme çözerek işlem hatasını azaltman gerektiğini kanıtlıyor. Unutma ki matematik pes etmeyenlerin alanıdır; bu eksiklerini kapatarak bir sonraki sınavda çok daha ileriye gidebilirsin."
 
-# --- VERİ OKUMA SİSTEMİ ---
+# --- VERİ VE SINIF SEÇİMİ ---
+with st.sidebar:
+    st.markdown('<span class="sidebar-title">📐 KATEGORİ SEÇİNİZ</span>', unsafe_allow_html=True)
+    sinif_listesi = [f"{i}. Sınıf" for i in range(4, 13)]
+    secilen_sinif = st.selectbox("İşlem yapılacak sınıf:", sinif_listesi, index=3)
+    sinif_no = secilen_sinif.split(".")[0]
+    aktif_dosya = f"sonuclar_{sinif_no}.xlsx"
+
 @st.cache_data
-def veriyi_oku(dosya_adi):
-    if not os.path.exists(dosya_adi): return None
-    df = pd.read_excel(dosya_adi)
-    # Öğrenci numaralarını temizleme ve stringe çevirme
+def veriyi_oku(dosya):
+    if not os.path.exists(dosya): return None
+    df = pd.read_excel(dosya)
     df['Arama_No'] = df['Öğrenci No'].astype(str).str.lstrip('0').str.split('.').str[0]
-    # Otomatik Başarı Sıralaması (Yüksek puan üstte)
     df = df.sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
     return df
 
-# --- SOL MENÜ (SINIF SEÇİMİ) ---
-with st.sidebar:
-    st.markdown('<span class="sidebar-label">📊 SINIF SEÇİNİZ (POP-UP MENÜ)</span>', unsafe_allow_html=True)
-    siniflar = [f"{i}. Sınıf" for i in range(4, 13)]
-    # Öğretmenlerin fark etmesi için ibare eklendi
-    secilen_sinif_str = st.selectbox("Lütfen listeden sınav kategorisini belirleyin:", siniflar, index=3)
-    secilen_no = secilen_sinif_str.split(".")[0]
-    aktif_dosya = f"sonuclar_{secilen_no}.xlsx"
-    st.divider()
-    st.caption("Not: Diğer sınıfların sonuçlarını görmek için yukarıdaki menüyü kullanabilirsiniz.")
-
 df = veriyi_oku(aktif_dosya)
 
 if df is None:
-    st.warning(f"⚠️ {secilen_sinif_str} kategorisine ait 'sonuclar_{secilen_no}.xlsx' dosyası GitHub deponuzda bulunamadı.")
+    st.warning(f"⚠️ {secilen_sinif} verileri henüz hazır değil.")
 else:
-    tab1, tab2 = st.tabs(["👤 Öğrenci Sorgulama", "🏫 Kurum ve Öğretmen Paneli"])
-    # --- app.py içindeki tab2 (Kurumsal Panel) bölümüne eklenecek ek özellik ---
+    t1, t2 = st.tabs(["👤 Öğrenci Sorgulama", "🏫 İdareci Paneli"])
 
-with tab2:
-    sifre = st.text_input("🔐 Kurum Şifresi:", type="password")
-    if sifre == "darder47":
-        st.success("Yetki Onaylandı.")
-        
-        # Filtreleme Seçenekleri
-        kurum_okul = st.selectbox("Görüntülenecek Kurum:", ["Tüm İlçe Listesi"] + sorted(df['OKUL ADI'].unique()))
-        
-        f_df = df if kurum_okul == "Tüm İlçe Listesi" else df[df['OKUL ADI'] == kurum_okul]
-        
-        # 2. AŞAMA İÇİN BARAJ FİLTRESİ (Sadece Finalistlerin Belgesini Çıkarmak İçin)
-        st.divider()
-        st.subheader("🎟️ 2. Aşama Sınav Giriş Belgeleri")
-        st.info("Sadece 2. aşamaya girmeye hak kazanan (barajı geçen) öğrencilerin belgeleri listelenir.")
-        
-        baraj_puani = st.number_input("Giriş Belgesi İçin Baraj Puanı:", value=75)
-        belge_df = f_df[f_df['Puan'] >= baraj_puani]
-        
-        if belge_df.empty:
-            st.warning("Bu okulda veya sınıfta belirlenen barajı geçen öğrenci bulunamadı.")
-        else:
-            st.write(f"Toplam {len(belge_df)} öğrenci için belge hazırlanabilir.")
-            
-            # GİRİŞ BELGESİ İÇİN DİNAMİK BİLGİLER
-            c_giris1, c_giris2 = st.columns(2)
-            sinav_yeri = c_giris1.text_input("Sınav Bina Adı:", value="Dargeçit Anadolu Lisesi")
-            sinav_tarihi = c_giris2.text_input("Sınav Tarihi ve Saati:", value="18 Mayıs 2026 - 10:00")
-
-            # --- PROFESYONEL GİRİŞ BELGESİ HTML MOTORU ---
-            # (Bu şablon yönetici panelindekiyle aynıdır, idareciler buradan çıktı alabilir)
-            belge_html = """
-            <html><head><meta charset="utf-8"><style>
-                @page { size: A4 portrait; margin: 10mm; }
-                * { box-sizing: border-box; }
-                body { font-family: 'Segoe UI', Arial, sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; }
-                .sayfa { width: 100%; height: 277mm; page-break-after: always; display: flex; flex-direction: column; }
-                .belge-kutu { 
-                    border: 2px solid #111827; border-radius: 12px; padding: 15px; 
-                    margin-bottom: 10mm; height: 128mm; position: relative; overflow: hidden;
-                    background-image: radial-gradient(#f3f4f6 1px, transparent 1px); background-size: 20px 20px;
-                }
-                .baslik-alan { text-align: center; border-bottom: 3px solid #E30A17; padding-bottom: 8px; margin-bottom: 10px; }
-                .baslik-alan h2 { margin: 0; font-size: 17px; font-weight: 900; }
-                .baslik-alan h3 { margin: 4px 0 0 0; color: #E30A17; font-size: 13px; font-weight: 800; }
-                .bilgi-tablo { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
-                .bilgi-tablo td { padding: 6px; border: 1px solid #111827; }
-                .bilgi-tablo td:nth-child(odd) { background: #f3f4f6; font-weight: bold; width: 22%; }
-                .bilgi-tablo td:nth-child(even) { font-weight: 800; font-size: 13px; }
-                .salon-vurgu { display: flex; justify-content: space-around; background: #111827; color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-                .kurallar { border: 2px dashed #E30A17; padding: 10px; border-radius: 8px; font-size: 10.5px; line-height: 1.3; }
-            </style></head><body>
-            """
-            
-            for i, row in belge_df.reset_index().iterrows():
-                if i % 2 == 0: belge_html += "<div class='sayfa'>"
-                
-                belge_html += f"""
-                <div class="belge-kutu">
-                    <div class="baslik-alan">
-                        <h2>T.C. DARGEÇİT KAYMAKAMLIĞI</h2>
-                        <h3>1. MATEMATİK OLİMPİYATI FİNAL GİRİŞ BELGESİ</h3>
-                    </div>
-                    <table class="bilgi-tablo">
-                        <tr><td>Adı Soyadı</td><td>{row['Ad']} {row['Soyad']}</td><td>Öğrenci No</td><td>{row['Öğrenci No']}</td></tr>
-                        <tr><td>Okulu</td><td colspan="3">{row['OKUL ADI']}</td></tr>
-                        <tr><td>Sınıf / Şube</td><td colspan="3">{row['Sınıf']} / {row['Şube']}</td></tr>
-                    </table>
-                    <div style="background:#f3f4f6; padding:8px; border-radius:8px; text-align:center; margin-bottom:10px; border:1px solid #ccc;">
-                        <b>Sınav Yeri:</b> {sinav_yeri} | <b>Tarih:</b> {sinav_tarihi}
-                    </div>
-                    <div class="salon-vurgu">
-                        <span>SALON ADI: {row.get('Salon Adı', 'Tanımsız')}</span>
-                        <span>SIRA NO: {row.get('Sıra No', 'Tanımsız')}</span>
-                    </div>
-                    <div class="kurallar">
-                        <b style="color:#E30A17;">SINAV KURALLARI:</b>
-                        <ul>
-                            <li>Sınava gelirken bu belgeyi ve <b>Nüfus Cüzdanınızı</b> mutlaka getiriniz.</li>
-                            <li>Sınav klasik (açık uçlu) sorulardan oluşur. Kendi kaleminizi ve silginizi getirmelisiniz.</li>
-                            <li>Sınav esnasında silgi vb. alışverişi kesinlikle yasaktır.</li>
-                        </ul>
-                    </div>
-                </div>
-                """
-                if i % 2 == 1 or i == len(belge_df) - 1: belge_html += "</div>"
-
-            belge_html += "</body></html>"
-            
-            st.download_button(
-                label=f"🖨️ {kurum_okul} Giriş Belgelerini PDF Hazırla",
-                data=belge_html,
-                file_name=f"Giris_Belgeleri_{kurum_okul}.html",
-                mime="text/html",
-                use_container_width=True
-            )
-
-    # ---------------------------------------------------------
-    # 1. ÖĞRENCİ SORGULAMA TABI
-    # ---------------------------------------------------------
-    with tab1:
-        st.markdown(f"### 🔍 {secilen_sinif_str} Sonuç Sorgulama")
+    with t1:
+        st.markdown(f"### 🔍 {secilen_sinif} Bireysel Sonuç Paneli")
         c1, c2 = st.columns(2)
-        with c1:
-            okul_secim = st.selectbox("Okulunuzu Seçin:", sorted(df['OKUL ADI'].unique()))
-        with c2:
-            no_secim = st.text_input("Öğrenci Numaranız (Örn: 35):").lstrip('0')
+        with c1: okul = st.selectbox("Okulunuz:", sorted(df['OKUL ADI'].unique()), key="o1")
+        with c2: no = st.text_input("Okul Numaranız:", key="n1").lstrip('0')
 
-        if st.button("Sonucumu Göster", type="primary"):
-            sonuc = df[(df['OKUL ADI'] == okul_secim) & (df['Arama_No'] == no_secim)]
+        if st.button("Sonucu Görüntüle", type="primary"):
+            sonuc = df[(df['OKUL ADI'] == okul) & (df['Arama_No'] == no)]
             if not sonuc.empty:
                 st.balloons()
                 o = sonuc.iloc[0]
-                
-                # Dinamik Yorum Sistemi
-                p = o['Puan']
-                if p >= 85: yr = "🌟 Üstün Başarı! Olimpiyat standartlarında bir zekaya sahipsin. 2. Aşamada başarılar!"
-                elif p >= 65: yr = "👍 Çok İyi! Birkaç küçük dikkat hatası dışında hedefine çok yakınsın."
-                elif p >= 40: yr = "📚 Başarılı bir temel. Düzenli soru çözümü ile netlerini hızla artırabilirsin."
-                else: yr = "💪 Bu sınav senin için harika bir tecrübe oldu, çalışmaya devam et!"
-
+                analiz_metni = ogrenci_analizi_uret(o)
                 st.markdown(f"""
-                <div style="background:white; padding:30px; border-radius:15px; border-top:8px solid var(--meb-kirmizi); box-shadow:0 10px 30px rgba(0,0,0,0.15);">
-                    <h2 style="color:var(--koyu-siyah); margin:0;">{o['Ad']} {o['Soyad']}</h2>
-                    <p style="color:#555; font-size:18px;"><b>{o['OKUL ADI']}</b> - {o['Sınıf']}/{o['Şube']} | Öğr. No: <b>{o['Öğrenci No']}</b></p>
-                    <div style="background:var(--koyu-siyah); color:white; padding:10px; border-radius:8px; display:inline-block; margin-bottom:20px;">
-                        İlçe Sıralaması: {o['İlçe Sırası']} | Okul Sıralaması: {o['Okul Sırası']}
+                <div style="background:white; padding:40px; border-radius:20px; border-top:12px solid var(--meb-red); box-shadow:0 15px 40px rgba(0,0,0,0.15);">
+                    <h1 style="color:var(--navy); margin:0;">{o['Ad']} {o['Soyad']}</h1>
+                    <p style="font-size:20px; color:#555;">{o['OKUL ADI']} | Sınıf: {o['Sınıf']}/{o['Şube']}</p>
+                    <div style="display:flex; gap:15px; margin:20px 0;">
+                        <div style="background:var(--navy); color:white; padding:10px 20px; border-radius:8px;">İlçe Sırası: {o['İlçe Sırası']}</div>
+                        <div style="background:var(--meb-red); color:white; padding:10px 20px; border-radius:8px;">Okul Sırası: {o['Okul Sırası']}</div>
                     </div>
-                    <div style="display:flex; justify-content:space-around; text-align:center; border:2px solid #eee; padding:20px; border-radius:12px;">
-                        <div><p style="margin:0; color:#666;">Doğru</p><h3 style="color:#059669; margin:0;">{o['Doğru']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Yanlış</p><h3 style="color:#E30A17; margin:0;">{o['Yanlış']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Boş</p><h3 style="color:#6b7280; margin:0;">{o['Boş']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Net</p><h3 style="color:#2563eb; margin:0;">{o['Net']}</h3></div>
-                        <div><p style="margin:0; color:#666;">Puan</p><h2 style="color:var(--koyu-siyah); margin:0;">{o['Puan']}</h2></div>
+                    <hr>
+                    <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:20px; text-align:center; margin-top:20px;">
+                        <div style="background:#f1f5f9; padding:20px; border-radius:12px;"><b>Doğru</b><br><span style="font-size:32px; color:#059669;">{o['Doğru']}</span></div>
+                        <div style="background:#f1f5f9; padding:20px; border-radius:12px;"><b>Yanlış</b><br><span style="font-size:32px; color:var(--meb-red);">{o['Yanlış']}</span></div>
+                        <div style="background:#f1f5f9; padding:20px; border-radius:12px;"><b>Boş</b><br><span style="font-size:32px; color:#64748b;">{o['Boş']}</span></div>
+                        <div style="background:#f1f5f9; padding:20px; border-radius:12px;"><b>Net</b><br><span style="font-size:32px; color:#2563eb;">{o['Net']}</span></div>
+                        <div style="background:var(--navy); padding:20px; border-radius:12px; color:white;"><b>Puan</b><br><span style="font-size:32px; font-weight:900;">{o['Puan']}</span></div>
                     </div>
-                    <div style="background:#fff5f5; padding:15px; border-radius:8px; border-left:5px solid var(--meb-kirmizi); margin-top:20px;">
-                        <p style="margin:0; font-style:italic;"><b>Analiz:</b> {yr}</p>
+                    <div style="margin-top:30px; padding:20px; background:#fff5f5; border-left:8px solid var(--meb-red); border-radius:8px; line-height:1.6; font-size:16px;">
+                        <b>🎓 Başarı Analizi:</b> {analiz_metni}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-            else:
-                st.error("❌ Kayıt bulunamadı. Lütfen okul ve numara bilgilerinizi kontrol edin.")
+            else: st.error("❌ Bilgiler eşleşmedi.")
 
-    # ---------------------------------------------------------
-    # 2. ÖĞRETMEN VE MÜDÜR PANELİ (PDF AKTARIM)
-    # ---------------------------------------------------------
-    with tab2:
-        st.markdown(f"### 🏫 {secilen_sinif_str} Kurumsal Raporlama")
-        st.info("⚠️ Diğer sınıfların listesini görmek için sol taraftaki **'SINIF SEÇİNİZ'** menüsünü kullanın.")
-        
-        sifre = st.text_input("Giriş Şifresi:", type="password")
+    with t2:
+        st.markdown(f"### 🏫 {secilen_sinif} İdareci & Toplu İşlem Merkezi")
+        sifre = st.text_input("Giriş Şifresi:", type="password", key="adm_s")
         if sifre == "darder47":
-            kurum = st.selectbox("Görüntülenecek Okul:", ["Tüm İlçe Listesi"] + sorted(df['OKUL ADI'].unique()))
-            f_df = df if kurum == "Tüm İlçe Listesi" else df[df['OKUL ADI'] == kurum]
-
-            # Tablo Görünümü
-            st.dataframe(f_df[['İlçe Sırası', 'Okul Sırası', 'OKUL ADI', 'Sınıf', 'Şube', 'Öğrenci No', 'Ad', 'Soyad', 'Doğru', 'Yanlış', 'Net', 'Puan']], use_container_width=True)
-
-            c_ex, c_pdf = st.columns(2)
-            
-            # Excel İndir
-            buffer = io.BytesIO()
-            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-                f_df.to_excel(writer, index=False)
-            c_ex.download_button("📊 Excel Listeyi İndir", data=buffer.getvalue(), file_name=f"{kurum}_Sonuclar.xlsx", use_container_width=True)
-
-            # --- SİMETRİK VE KUSURSUZ A4 PDF ŞABLONU (1 SAYFA / 6 KARNE) ---
-            html_sablon = """
-            <html><head><meta charset="utf-8"><style>
-                @page { size: A4 portrait; margin: 8mm; }
-                * { box-sizing: border-box; }
-                body { font-family: 'Segoe UI', Arial, sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                .page { display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start; width: 100%; height: 275mm; page-break-after: always; }
-                .karne { width: 49%; height: 88mm; border: 2.5px solid #111827; border-radius: 10px; padding: 12px; margin-bottom: 3mm; position: relative; overflow: hidden; }
-                .baslik { color: #E30A17; text-align: center; font-weight: 900; font-size: 14px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 8px; text-transform: uppercase; }
-                .kimlik { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4px; font-size: 12px; }
-                .siralama { text-align: center; background: #111827; color: white; padding: 5px; border-radius: 5px; margin-bottom: 8px; font-size: 11px; font-weight: bold; }
-                .analiz-tablo { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 8px; table-layout: fixed; }
-                .analiz-tablo th { background: #f3f4f6; border: 1px solid #ccc; padding: 4px; font-size: 10px; }
-                .analiz-tablo td { border: 1px solid #ccc; padding: 5px; font-weight: bold; font-size: 14px; }
-                .optik-tablo { width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; table-layout: fixed; }
-                .optik-tablo td, .optik-tablo th { border: 1px solid #bbb; padding: 3px 0; height: 18px; }
-                .optik-tablo th { background: #eee; font-weight: bold; }
-                .dogru { background-color: #dcfce7 !important; color: #059669 !important; font-weight: 900; }
-                .yanlis { background-color: #fee2e2 !important; color: #E30A17 !important; font-weight: 900; }
-                .yorum { position: absolute; bottom: 8px; left: 12px; right: 12px; padding: 8px; background: #fff5f5 !important; border-left: 4px solid #E30A17; font-size: 10px; font-style: italic; font-weight: 600; line-height: 1.3; }
-            </style></head><body>
-            """
-            
-            kart_sayaci = 0
-            html_sablon += "<div class='page'>"
-            
-            for index, row in f_df.iterrows():
-                try:
-                    ogr_cevap = ast.literal_eval(row['Ogrenci_Cevap_Listesi']) if isinstance(row['Ogrenci_Cevap_Listesi'], str) else []
-                    dogru_cevap = ast.literal_eval(row['Cevap_Anahtari_Listesi']) if isinstance(row['Cevap_Anahtari_Listesi'], str) else []
-                except:
-                    ogr_cevap = list(row.get('Ogrenci_Cevap_Listesi', ''))
-                    dogru_cevap = list(row.get('Cevap_Anahtari_Listesi', ''))
-
-                soru_th, key_td, stu_td = "", "", ""
-                for i in range(len(dogru_cevap)):
-                    soru_th += f"<th>{i+1}</th>"
-                    key_td += f"<td>{dogru_cevap[i]}</td>"
-                    o_cvp = ogr_cevap[i] if i < len(ogr_cevap) else '-'
-                    if o_cvp == dogru_cevap[i] and o_cvp != '-':
-                        stu_td += f"<td class='dogru'>{o_cvp}</td>"
-                    elif o_cvp != dogru_cevap[i] and o_cvp != '-':
-                        stu_td += f"<td class='yanlis'>{o_cvp}</td>"
-                    else:
-                        stu_td += f"<td>-</td>"
-
-                p_val = row['Puan']
-                if p_val >= 85: y_txt = "🌟 Üstün Başarı! Olimpiyat standartlarında bir zekaya sahipsin. Tebrikler!"
-                elif p_val >= 65: y_txt = "👍 Çok İyi! Birkaç küçük dikkat hatası dışında harika bir performans."
-                elif p_val >= 40: y_txt = "📚 Başarılı bir temel. Düzenli soru çözümü ile zirveye çıkabilirsin."
-                else: y_txt = "💪 Bu sınav harika bir tecrübe oldu, çalışmaya devam!"
-
-                html_sablon += f"""
-                <div class="karne">
-                    <div class="baslik">1. DARGEÇİT MATEMATİK OLİMPİYATI</div>
-                    <div class="kimlik"><span>{row['Ad']} {row['Soyad']}</span><span style="color:#E30A17;">Öğr. No: {row['Öğrenci No']}</span></div>
-                    <div class="kimlik" style="font-size:11px; color:#555; margin-bottom:5px;"><span>{row['OKUL ADI']}</span><span>{row['Sınıf']}/{row['Şube']}</span></div>
-                    <div class="siralama">İlçe Sırası: {row['İlçe Sırası']} | Okul Sırası: {row['Okul Sırası']}</div>
-                    <table class="analiz-tablo">
-                        <tr><th>Doğru</th><th>Yanlış</th><th>Boş</th><th>Net</th><th>Puan</th></tr>
-                        <tr><td>{row['Doğru']}</td><td>{row['Yanlış']}</td><td>{row['Boş']}</td><td>{row['Net']}</td><td style="background:#fef08a !important; font-size:16px;">{row['Puan']}</td></tr>
-                    </table>
-                    <table class="optik-tablo"><tr><td>Soru</td>{soru_th}</tr><tr><td>Cvp</td>{key_td}</tr><tr><td>Öğr</td>{stu_td}</tr></table>
-                    <div class="yorum">{y_txt}</div>
-                </div>
-                """
-                kart_sayaci += 1
-                if kart_sayaci % 6 == 0 and kart_sayaci < len(f_df):
-                    html_sablon += "</div><div class='page'>"
-            
-            html_sablon += "</div></body></html>"
-            
-            c_pdf.download_button("🖨️ PDF Karneleri Hazırla", data=html_sablon, file_name=f"{kurum}_Karneler.html", mime="text/html", use_container_width=True)
-
-    :root {
-        --meb-red: #E30A17;
-        --navy: #111827;
-        --gray: #f3f4f6;
-    }
-    .main { background-color: var(--gray); }
-    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
-    .stTabs [data-baseweb="tab"] { 
-        height: 50px; background-color: white; border-radius: 8px 8px 0 0; 
-        font-weight: bold; border: 1px solid #ddd;
-    }
-    .stTabs [aria-selected="true"] { background-color: var(--meb-red) !important; color: white !important; }
-    
-    /* Üst Banner */
-    .header-container {
-        background: white; padding: 25px; border-bottom: 6px solid var(--meb-red);
-        border-radius: 12px; margin-bottom: 30px; text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .header-container h1 { color: var(--navy); font-weight: 900; font-size: 32px; margin-bottom: 5px; }
-    .header-container h3 { color: var(--meb-red); font-weight: 700; font-size: 18px; margin-top: 0; }
-    
-    /* Butonlar */
-    .stButton>button { 
-        background-color: var(--navy); color: white; border-radius: 10px; 
-        font-weight: bold; height: 3.5em; border: none; transition: 0.3s;
-    }
-    .stButton>button:hover { background-color: var(--meb-red); transform: translateY(-2px); }
-    
-    /* Yan Menü */
-    .sidebar-label { color: var(--meb-red); font-weight: 900; font-size: 18px; margin-bottom: 15px; display: block; text-align: center; }
-    </style>
-    """, unsafe_allow_html=True)
-
-# --- BANNER ---
-st.markdown("""
-    <div class="header-container">
-        <h1>🥇 1. DARGEÇİT MATEMATİK OLİMPİYATI</h1>
-        <h3>Sınav Sonuç Sorgulama ve Resmi Belge Portalı</h3>
-    </div>
-""", unsafe_allow_html=True)
-
-# --- VERİ YÜKLEME ---
-@st.cache_data
-def veriyi_oku(dosya_adi):
-    if not os.path.exists(dosya_adi): return None
-    try:
-        df = pd.read_excel(dosya_adi)
-        df['Arama_No'] = df['Öğrenci No'].astype(str).str.lstrip('0').str.split('.').str[0]
-        # Puan ve Net'e göre en iyiden en düşüğe sırala
-        df = df.sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
-        return df
-    except: return None
-
-# --- YAN MENÜ: SINIF SEÇİMİ ---
-with st.sidebar:
-    st.markdown('<span class="sidebar-label">📊 KATEGORİ SEÇİNİZ</span>', unsafe_allow_html=True)
-    sinif_listesi = [f"{i}. Sınıf" for i in range(4, 13)]
-    secilen_sinif_str = st.selectbox("Lütfen işlem yapacağınız sınıfı seçin:", sinif_listesi, index=3)
-    sinif_no = secilen_sinif_str.split(".")[0]
-    aktif_dosya = f"sonuclar_{sinif_no}.xlsx"
-    st.divider()
-    st.info(f"Su an **{secilen_sinif_str}** verileri üzerinde işlem yapmaktasınız.")
-
-df = veriyi_oku(aktif_dosya)
-
-if df is None:
-    st.warning(f"⚠️ {secilen_sinif_str} sonuç dosyası ({aktif_dosya}) sistemde bulunamadı.")
-else:
-    tab1, tab2 = st.tabs(["👤 Öğrenci Sonuç Sorgulama", "🏫 İdareci ve Müdür Paneli"])
-
-    # =========================================================
-    # 1. TAB: ÖĞRENCİ SORGULAMA
-    # =========================================================
-    with tab1:
-        st.markdown(f"### 🔍 {secilen_sinif_str} Bireysel Sorgulama")
-        col_ogr1, col_ogr2 = st.columns(2)
-        with col_ogr1:
-            okul_secim = st.selectbox("Okulunuzu Seçin:", sorted(df['OKUL ADI'].unique()), key="okul_ogr")
-        with col_ogr2:
-            no_secim = st.text_input("Öğrenci Numaranız (Örn: 125):", key="no_ogr").lstrip('0')
-
-        if st.button("Sonucumu Göster", type="primary"):
-            sonuc = df[(df['OKUL ADI'] == okul_secim) & (df['Arama_No'] == no_secim)]
-            if not sonuc.empty:
-                st.balloons()
-                o = sonuc.iloc[0]
-                p = o['Puan']
-                
-                # Başarı Notu
-                if p >= 85: yr = "🌟 Üstün Başarı! 2. Aşama final sınavında başarılar dileriz!"
-                elif p >= 65: yr = "👍 Çok İyi! Güzel bir performans sergiledin, hedefine çok yakınsın."
-                elif p >= 40: yr = "📚 Başarılı bir temel. Düzenli çalışma ile netlerini zirveye taşıyabilirsin."
-                else: yr = "💪 Bu sınav harika bir tecrübe oldu. Eksiklerini kapatıp çalışmaya devam et!"
-
-                st.markdown(f"""
-                <div style="background:white; padding:35px; border-radius:15px; border-top:10px solid var(--meb-red); box-shadow:0 10px 30px rgba(0,0,0,0.1);">
-                    <h2 style="color:var(--navy); margin:0;">{o['Ad']} {o['Soyad']}</h2>
-                    <p style="color:#555; font-size:18px; margin-bottom:15px;"><b>{o['OKUL ADI']}</b> - {o['Sınıf']}/{o['Şube']} | No: <b>{o['Öğrenci No']}</b></p>
-                    <div style="display:flex; gap:10px; margin-bottom:25px;">
-                        <span style="background:var(--navy); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">İlçe Sırası: {o['İlçe Sırası']}</span>
-                        <span style="background:var(--meb-red); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">Okul Sırası: {o['Okul Sırası']}</span>
-                    </div>
-                    <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:15px; text-align:center;">
-                        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #eee;"><small>Doğru</small><br><b style="font-size:24px; color:#059669;">{o['Doğru']}</b></div>
-                        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #eee;"><small>Yanlış</small><br><b style="font-size:24px; color:var(--meb-red);">{o['Yanlış']}</b></div>
-                        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #eee;"><small>Boş</small><br><b style="font-size:24px; color:#6b7280;">{o['Boş']}</b></div>
-                        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #eee;"><small>Net</small><br><b style="font-size:24px; color:#2563eb;">{o['Net']}</b></div>
-                        <div style="background:#fff7ed; padding:15px; border-radius:10px; border:2px solid #fdba74;"><small>Puan</small><br><b style="font-size:28px; color:var(--navy);">{o['Puan']}</b></div>
-                    </div>
-                    <div style="margin-top:25px; padding:15px; background:#fef2f2; border-left:5px solid var(--meb-red); border-radius:5px;">
-                        <p style="margin:0; font-weight:bold; font-style:italic; color:var(--navy);">Analiz: {yr}</p>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.error("❌ Kayıt bulunamadı. Lütfen okulunuzu ve numaranızı kontrol edin.")
-
-    # =========================================================
-    # 2. TAB: İDARECİ PANELİ (TOPLU İŞLEMLER VE BELGELER)
-    # =========================================================
-    with tab2:
-        st.markdown(f"### 🏫 {secilen_sinif_str} Kurumsal İdareci Paneli")
-        sifre = st.text_input("Giriş Şifresi:", type="password", key="admin_sifre")
-        
-        if sifre == "darder47":
-            st.success("Yetkilendirme Başarılı.")
-            
-            col_id1, col_id2 = st.columns([2, 1])
-            with col_id1:
-                kurum = st.selectbox("İşlem Yapılacak Okulu Seçin:", ["Tüm İlçe"] + sorted(df['OKUL ADI'].unique()))
-            with col_id2:
-                baraj = st.number_input("Giriş Belgesi Baraj Puanı:", value=75)
+            c_a1, c_a2 = st.columns([2, 1])
+            with c_a1: kurum = st.selectbox("Okul Filtrele:", ["Tüm İlçe"] + sorted(df['OKUL ADI'].unique()), key="k1")
+            with c_a2: baraj = st.number_input("Baraj Puanı:", value=75)
             
             f_df = df if kurum == "Tüm İlçe" else df[df['OKUL ADI'] == kurum]
-            st.dataframe(f_df[['İlçe Sırası', 'Okul Sırası', 'OKUL ADI', 'Sınıf', 'Şube', 'Öğrenci No', 'Ad', 'Soyad', 'Net', 'Puan']], use_container_width=True)
+            st.dataframe(f_df, use_container_width=True)
 
-            st.divider()
-            
-            # --- ÇIKTI ALMA BÖLÜMÜ ---
-            st.markdown("### 🖨️ Toplu Çıktı ve Belge Oluşturucu")
             col_btn1, col_btn2, col_btn3 = st.columns(3)
             
-            # 1. EXCEL
-            buf_ex = io.BytesIO()
-            with pd.ExcelWriter(buf_ex, engine='openpyxl') as writer:
-                f_df.to_excel(writer, index=False)
-            col_btn1.download_button("📊 Excel Listeyi İndir", data=buf_ex.getvalue(), file_name=f"{kurum}_Listesi.xlsx")
-
-            # 2. PROFESYONEL KARNELER (PDF/HTML)
-            # (1 sayfada 6 simetrik karne)
+            # --- PROFESYONEL KARNE HTML (1 SAYFADA 6 ADET) ---
             html_karne = """
             <html><head><meta charset="utf-8"><style>
-                @page { size: A4; margin: 10mm; }
-                body { font-family: Arial, sans-serif; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; }
-                .sayfa { display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; height: 275mm; page-break-after: always; }
-                .karne { width: 48%; height: 88mm; border: 2px solid #111827; border-radius: 10px; padding: 15px; margin-bottom: 3mm; box-sizing: border-box; position: relative; }
-                .baslik { color: #E30A17; text-align: center; font-weight: 900; font-size: 14px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 8px; }
-                .kimlik { display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin-bottom: 5px; }
-                .sira { text-align: center; background: #111827; color: white; padding: 5px; border-radius: 5px; font-size: 10px; margin-bottom: 8px; }
-                .tablo { width: 100%; border-collapse: collapse; text-align: center; font-size: 10px; margin-bottom: 8px; }
-                .tablo th, .tablo td { border: 1px solid #ccc; padding: 4px; }
-                .tablo th { background: #f3f4f6; }
-                .optik { width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; table-layout: fixed; }
-                .optik th, .optik td { border: 1px solid #bbb; height: 18px; }
-                .dogru { background: #dcfce7 !important; color: #059669; font-weight: bold; }
-                .yanlis { background: #fee2e2 !important; color: #E30A17; font-weight: bold; }
-                .yorum { position: absolute; bottom: 10px; left: 15px; right: 15px; padding: 8px; background: #fef2f2; border-left: 3px solid #E30A17; font-size: 9.5px; font-style: italic; }
+                @page { size: A4 portrait; margin: 5mm; }
+                * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; }
+                body { font-family: 'Segoe UI', Arial, sans-serif; background: white; padding: 0; margin: 0; }
+                .page { width: 100%; height: 287mm; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; page-break-after: always; padding: 10mm; }
+                .karne { 
+                    width: 92mm; height: 86mm; border: 2.5px solid #111827; border-radius: 12px; 
+                    padding: 12px; margin: 4mm; position: relative; overflow: hidden; background: white;
+                }
+                .baslik { color: #E30A17; text-align: center; font-weight: 900; font-size: 13px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; }
+                .kimlik { display: flex; justify-content: space-between; font-weight: 800; font-size: 11px; margin-bottom: 6px; }
+                .siralama { text-align: center; background: #111827; color: white; padding: 4px; border-radius: 6px; font-size: 10px; margin-bottom: 8px; font-weight: bold; }
+                .stats { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 8px; font-size: 11px; }
+                .stats td { border: 1.5px solid #ddd; padding: 4px; font-weight: 900; }
+                .optik { width: 100%; border-collapse: collapse; text-align: center; font-size: 8px; table-layout: fixed; }
+                .optik th, .optik td { border: 1px solid #ccc; height: 16px; font-weight: 900; }
+                .dogru { background: #dcfce7 !important; color: #059669; }
+                .yanlis { background: #fee2e2 !important; color: #E30A17; }
+                .analiz-notu { 
+                    position: absolute; bottom: 8px; left: 10px; right: 10px; 
+                    font-size: 8.5px; font-style: italic; line-height: 1.2; font-weight: 600;
+                    background: #f8fafc; padding: 6px; border-left: 3px solid #E30A17; 
+                }
             </style></head><body>
             """
             for i, row in f_df.reset_index().iterrows():
-                if i % 6 == 0: html_karne += "<div class='sayfa'>"
-                
-                # Cevapları hazırlama
+                if i % 6 == 0: html_karne += "<div class='page'>"
                 try:
                     ogr_cvp = ast.literal_eval(row['Ogrenci_Cevap_Listesi'])
                     key_cvp = ast.literal_eval(row['Cevap_Anahtari_Listesi'])
-                except:
-                    ogr_cvp = ["-"] * 20; key_cvp = ["-"] * 20
+                except: ogr_cvp = ["-"]*20; key_cvp = ["-"]*20
                 
-                th_tags = "".join([f"<th>{j+1}</th>" for j in range(20)])
                 st_tags = ""
                 for j in range(20):
-                    c = ogr_cvp[j] if j < len(ogr_cvp) else "-"
-                    k = key_cvp[j] if j < len(key_cvp) else "-"
+                    c, k = (ogr_cvp[j] if j < len(ogr_cvp) else "-"), (key_cvp[j] if j < len(key_cvp) else "-")
                     if c == k and c != "-": st_tags += f"<td class='dogru'>{c}</td>"
                     elif c != k and c != "-": st_tags += f"<td class='yanlis'>{c}</td>"
                     else: st_tags += f"<td>-</td>"
@@ -514,75 +177,72 @@ else:
                     <div class="baslik">1. DARGEÇİT MATEMATİK OLİMPİYATI</div>
                     <div class="kimlik"><span>{row['Ad']} {row['Soyad']}</span><span>No: {row['Öğrenci No']}</span></div>
                     <div class="kimlik" style="color:#555; font-size:9px;"><span>{row['OKUL ADI']}</span><span>{row['Sınıf']}/{row['Şube']}</span></div>
-                    <div class="sira">İlçe Sırası: {row['İlçe Sırası']} | Okul Sırası: {row['Okul Sırası']}</div>
-                    <table class="tablo">
-                        <tr><th>D</th><th>Y</th><th>B</th><th>Net</th><th>Puan</th></tr>
-                        <tr><td>{row['Doğru']}</td><td>{row['Yanlış']}</td><td>{row['Boş']}</td><td>{row['Net']}</td><td style="background:#fef08a;">{row['Puan']}</td></tr>
+                    <div class="siralama">İlçe: {row['İlçe Sırası']} | Okul: {row['Okul Sırası']}</div>
+                    <table class="stats">
+                        <tr><td style="background:#f8fafc;">D: {row['Doğru']}</td><td style="background:#f8fafc;">Y: {row['Yanlış']}</td><td style="background:#fef08a; font-size:14px;">Puan: {row['Puan']}</td></tr>
                     </table>
-                    <table class="optik"><tr>{th_tags}</tr><tr>{st_tags}</tr></table>
-                    <div class="yorum">Başarılar dileriz...</div>
+                    <table class="optik"><tr>{"".join([f"<th>{j+1}</th>" for j in range(20)])}</tr><tr>{st_tags}</tr></table>
+                    <div class="analiz-notu">{ogrenci_analizi_uret(row)[:160]}...</div>
                 </div>
                 """
                 if (i + 1) % 6 == 0 or i == len(f_df) - 1: html_karne += "</div>"
             
             html_karne += "</body></html>"
-            col_btn2.download_button("📑 Toplu Karneleri Al (PDF)", data=html_karne, file_name=f"{kurum}_Karneler.html", mime="text/html")
+            col_btn2.download_button("📑 Toplu Karneleri Al (6'lı)", data=html_karne, file_name=f"{kurum}_Karneler.html", mime="text/html")
 
-            # 3. PROFESYONEL GİRİŞ BELGELERİ (PDF/HTML)
-            # (1 sayfada 2 simetrik belge - A5 boyutu gibi)
+            # --- PROFESYONEL GİRİŞ BELGESİ (MEB FORMATI - 1 SAYFADA 2 ADET) ---
             belge_df = f_df[f_df['Puan'] >= baraj]
-            
             html_belge = """
             <html><head><meta charset="utf-8"><style>
                 @page { size: A4; margin: 10mm; }
-                body { font-family: Arial, sans-serif; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; }
-                .sayfa { display: flex; flex-direction: column; width: 100%; height: 275mm; page-break-after: always; }
-                .belge { width: 100%; height: 128mm; border: 2.5px solid #111827; border-radius: 15px; padding: 25px; margin-bottom: 10mm; box-sizing: border-box; position: relative; background-image: radial-gradient(#f3f4f6 1px, transparent 1px); background-size: 20px 20px; }
-                .belge-baslik { text-align: center; border-bottom: 4px solid #E30A17; padding-bottom: 12px; margin-bottom: 15px; }
-                .belge-baslik h2 { margin: 0; color: #111827; font-size: 20px; text-transform: uppercase; }
-                .belge-baslik h3 { margin: 5px 0 0 0; color: #E30A17; font-size: 16px; font-weight: bold; }
-                .b-tablo { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 15px; background: white; }
-                .b-tablo td { padding: 10px; border: 1px solid #111827; }
-                .b-tablo .etiket { background: #f3f4f6; font-weight: bold; width: 22%; }
-                .vurgu-kutu { display: flex; justify-content: space-around; background: #111827; color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-                .kurallar { border: 2px dashed #E30A17; background: white; padding: 15px; border-radius: 10px; font-size: 11.5px; line-height: 1.5; }
-                .kurallar b { color: #E30A17; }
+                * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; }
+                body { font-family: 'Segoe UI', Tahoma, sans-serif; background: white; margin: 0; padding: 0; }
+                .sayfa { display: flex; flex-direction: column; justify-content: center; width: 100%; height: 285mm; page-break-after: always; padding: 10mm; }
+                .belge { 
+                    width: 100%; height: 130mm; border: 3px solid #111827; border-radius: 20px; padding: 30px; 
+                    margin-bottom: 10mm; position: relative; background: #fff;
+                    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+                }
+                .b-header { text-align: center; border-bottom: 5px solid #E30A17; padding-bottom: 15px; margin-bottom: 20px; }
+                .b-header h2 { margin: 0; color: #111827; font-size: 22px; font-weight: 900; }
+                .b-header h3 { margin: 5px 0 0 0; color: #E30A17; font-size: 16px; }
+                .b-tablo { width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 20px; }
+                .b-tablo td { padding: 12px; border: 2px solid #111827; font-weight: 800; }
+                .b-tablo .lbl { background: #f1f5f9; width: 25%; font-weight: bold; color: #444; }
+                .vurgu { display: flex; justify-content: space-around; background: #111827; color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 20px; font-weight: 900; }
+                .rules { border: 2px dashed #E30A17; padding: 15px; border-radius: 12px; font-size: 12px; line-height: 1.4; color: #111827; }
+                .rules b { color: #E30A17; font-size: 14px; display: block; margin-bottom: 5px; text-align: center; }
             </style></head><body>
             """
             for i, row in belge_df.reset_index().iterrows():
                 if i % 2 == 0: html_belge += "<div class='sayfa'>"
-                
                 html_belge += f"""
                 <div class="belge">
-                    <div class="belge-baslik">
+                    <div class="b-header">
                         <h2>T.C. DARGEÇİT KAYMAKAMLIĞI</h2>
-                        <h3>1. MATEMATİK OLİMPİYATI FİNAL GİRİŞ BELGESİ</h3>
+                        <h2>1. MATEMATİK OLİMPİYATI FİNAL GİRİŞ BELGESİ</h2>
                     </div>
                     <table class="b-tablo">
-                        <tr><td class="etiket">Adı Soyadı</td><td style="font-weight:900;">{row['Ad']} {row['Soyad']}</td><td class="etiket">Öğrenci No</td><td style="font-weight:900;">{row['Öğrenci No']}</td></tr>
-                        <tr><td class="etiket">Okulu</td><td colspan="3">{row['OKUL ADI']}</td></tr>
-                        <tr><td class="etiket">Sınıf / Şube</td><td colspan="3">{row['Sınıf']} / {row['Şube']}</td></tr>
+                        <tr><td class="lbl">Adı Soyadı</td><td>{row['Ad']} {row['Soyad']}</td><td class="lbl">Öğrenci No</td><td>{row['Öğrenci No']}</td></tr>
+                        <tr><td class="lbl">Okul Adı</td><td colspan="3">{row['OKUL ADI']}</td></tr>
+                        <tr><td class="lbl">Sınıf/Şube</td><td colspan="3">{row['Sınıf']} / {row['Şube']}</td></tr>
                     </table>
-                    <div style="background:white; border:1px solid #ccc; padding:10px; text-align:center; border-radius:8px; margin-bottom:15px; font-size:14px;">
-                        📍 <b>Sınav Yeri:</b> Dargeçit Anadolu Lisesi | 📅 <b>Tarih:</b> 18 Mayıs 2026 - 10:00
+                    <div style="text-align:center; margin-bottom:15px; font-weight:bold; font-size:16px;">
+                        📍 Sınav Yeri: Dargeçit Anadolu Lisesi | 📅 Tarih: 18 Mayıs 2026 - 10:00
                     </div>
-                    <div class="vurgu-kutu">
-                        <span style="font-size:18px;">SALON: <b>{row.get('Salon Adı', 'Belirlenmedi')}</b></span>
-                        <span style="font-size:18px;">SIRA: <b>{row.get('Sıra No', 'Belirlenmedi')}</b></span>
+                    <div class="vurgu">
+                        <span>SALON: {row.get('Salon Adı', 'MERKEZ-1')}</span>
+                        <span>SIRA: {row.get('Sıra No', '1')}</span>
                     </div>
-                    <div class="kurallar">
-                        <b>ÖNEMLİ KURALLAR:</b>
-                        <ul style="margin:5px 0 0 0; padding-left:20px;">
-                            <li>Sınava gelirken bu belgeyi ve <b>Nüfus Cüzdanınızı</b> getirmek zorunludur.</li>
-                            <li>Kendi kurşun kalem ve silginizi getirmelisiniz. Silgi alışverişi yasaktır.</li>
-                            <li>Sınav klasik (açık uçlu) sorulardan oluşmaktadır.</li>
-                        </ul>
+                    <div class="rules">
+                        <b>⚠️ ÖNEMLİ SINAV KURALLARI</b>
+                        • Sınava gelirken bu belgeyi ve <b>Geçerli Kimlik Belgenizi</b> mutlaka yanınızda bulundurunuz.<br>
+                        • Öğrenciler kendi kurşun kalem ve silgilerini getirmelidir; <b>silgi alışverişi kesinlikle yasaktır.</b><br>
+                        • Sınav 10 klasik sorudan oluşmaktadır. İlk 30 dakika salondan çıkılamaz.
                     </div>
                 </div>
                 """
                 if (i + 1) % 2 == 0 or i == len(belge_df) - 1: html_belge += "</div>"
             
             html_belge += "</body></html>"
-            col_btn3.download_button("🎟️ Giriş Belgelerini Al (PDF)", data=html_belge, file_name=f"{kurum}_Giris_Belgeleri.html", mime="text/html")
-        elif sifre != "":
-            st.error("Hatalı Şifre!")
+            col_btn3.download_button("🎟️ Giriş Belgelerini Al (2'li)", data=html_belge, file_name=f"{kurum}_Giris_Belgeleri.html", mime="text/html")
