@@ -13,7 +13,144 @@ st.markdown("""
     :root {
         --meb-kirmizi: #E30A17;
         --koyu-siyah: #111827;
+        --acik-gri: #f3f4f6;import streamlit as st
+import pandas as pd
+import io
+import ast
+import os
+
+# --- SAYFA AYARLARI ---
+st.set_page_config(page_title="1. Dargeçit Matematik Olimpiyatı Portalı", layout="wide", page_icon="🥇")
+
+# --- PROFESYONEL KURUMSAL TASARIM (CSS) ---
+st.markdown("""
+    <style>
+    :root {
+        --meb-kirmizi: #E30A17;
+        --koyu-siyah: #111827;
         --acik-gri: #f3f4f6;
+    }
+    .main { background-color: var(--acik-gri); }
+    .header-banner { 
+        background-color: white; padding: 25px; border-bottom: 5px solid var(--meb-kirmizi); 
+        border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; 
+    }
+    .header-banner h1 { color: var(--koyu-siyah); font-weight: 800; font-size: 30px; margin-bottom: 5px; }
+    .header-banner h3 { color: var(--meb-kirmizi); font-weight: 600; font-size: 18px; margin-top: 0; }
+    
+    /* Sol Menü Sınıf Seçimi Vurgusu */
+    .sidebar-label { color: var(--meb-kirmizi); font-weight: bold; font-size: 16px; margin-bottom: 10px; display: block; }
+    
+    /* Buton Tasarımları */
+    .stButton>button { background-color: var(--koyu-siyah); color: white; border-radius: 8px; font-weight: bold; border:none; transition: 0.3s; width: 100%; }
+    .stButton>button:hover { background-color: var(--meb-kirmizi); color: white; transform: translateY(-2px); }
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- ÜST BANNER ---
+st.markdown("""
+    <div class="header-banner">
+        <h1>🥇 1. DARGEÇİT MATEMATİK OLİMPİYATI</h1>
+        <h3>Sınav Sonuç Sorgulama ve Analiz Sistemi</h3>
+    </div>
+""", unsafe_allow_html=True)
+
+# --- VERİ OKUMA ---
+@st.cache_data
+def veriyi_oku(dosya_adi):
+    if not os.path.exists(dosya_adi): return None
+    df = pd.read_excel(dosya_adi)
+    # Öğrenci numaralarını temizleme ve stringe çevirme
+    df['Arama_No'] = df['Öğrenci No'].astype(str).str.lstrip('0').str.split('.').str[0]
+    # Otomatik Sıralama
+    df = df.sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
+    return df
+
+# --- SOL MENÜ (SINIF SEÇİMİ) ---
+with st.sidebar:
+    st.markdown('<span class="sidebar-label">📊 SINIF SEÇİNİZ (POP-UP)</span>', unsafe_allow_html=True)
+    siniflar = [f"{i}. Sınıf" for i in range(4, 13)]
+    secilen_sinif_str = st.selectbox("Lütfen listeden sınav kategorisini belirleyin:", siniflar, index=3)
+    secilen_no = secilen_sinif_str.split(".")[0]
+    aktif_dosya = f"sonuclar_{secilen_no}.xlsx"
+    st.divider()
+    st.caption("Not: Diğer sınıfları görmek için yukarıdaki menüyü kullanın.")
+
+df = veriyi_oku(aktif_dosya)
+
+if df is None:
+    st.warning(f"⚠️ {secilen_sinif_str} kategorisine ait '{aktif_dosya}' dosyası henüz sisteme yüklenmedi.")
+else:
+    tab1, tab2 = st.tabs(["👤 Öğrenci Sorgulama", "🏫 Müdür & Kurum Paneli"])
+
+    # 1. ÖĞRENCİ SORGULAMA TABI
+    with tab1:
+        st.markdown(f"### 🔍 {secilen_sinif_str} Bireysel Sonuç Sorgulama")
+        c1, c2 = st.columns(2)
+        with c1: okul_secim = st.selectbox("Okulunuzu Seçin:", sorted(df['OKUL ADI'].unique()))
+        with c2: no_secim = st.text_input("Öğrenci Numaranız (Örn: 35):", key="ogr_no_input").lstrip('0')
+
+        if st.button("Sonucumu Göster", type="primary"):
+            sonuc = df[(df['OKUL ADI'] == okul_secim) & (df['Arama_No'] == no_secim)]
+            if not sonuc.empty:
+                st.balloons()
+                o = sonuc.iloc[0]
+                
+                p = o['Puan']
+                if p >= 85: yr = "🌟 Üstün Başarı! 2. Aşamada başarılar!"
+                elif p >= 65: yr = "👍 Çok İyi! Hedefe çok yakınsın."
+                elif p >= 40: yr = "📚 Başarılı bir temel. Pratiğe devam."
+                else: yr = "💪 Asla pes etme, çalışmaya devam!"
+
+                st.markdown(f"""
+                <div style="background:white; padding:30px; border-radius:15px; border-top:8px solid var(--meb-kirmizi); box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+                    <h2 style="color:var(--koyu-siyah); margin:0;">{o['Ad']} {o['Soyad']}</h2>
+                    <p style="color:#555; font-size:18px;"><b>{o['OKUL ADI']}</b> - {o['Sınıf']}/{o['Şube']} | Öğr. No: <b>{o['Öğrenci No']}</b></p>
+                    <div style="background:var(--koyu-siyah); color:white; padding:10px; border-radius:8px; display:inline-block; margin-bottom:20px;">
+                        İlçe Sıralaması: {o['İlçe Sırası']} | Okul Sırala: {o['Okul Sırası']}
+                    </div>
+                    <div style="display:flex; justify-content:space-around; text-align:center; border:2px solid #eee; padding:20px; border-radius:12px;">
+                        <div><p style="margin:0; color:#666;">Doğru</p><h3 style="color:#059669; margin:0;">{o['Doğru']}</h3></div>
+                        <div><p style="margin:0; color:#666;">Yanlış</p><h3 style="color:#E30A17; margin:0;">{o['Yanlış']}</h3></div>
+                        <div><p style="margin:0; color:#666;">Net</p><h3 style="color:#2563eb; margin:0;">{o['Net']}</h3></div>
+                        <div><p style="margin:0; color:#666;">Puan</p><h2 style="color:var(--koyu-siyah); margin:0;">{o['Puan']}</h2></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.error("❌ Kayıt bulunamadı.")
+
+    # 2. KURUM VE MÜDÜR PANELİ (GİRİŞ BELGESİ ENTEGRASYONU)
+    with tab2:
+        st.markdown(f"### 🏫 {secilen_sinif_str} Kurumsal Raporlama ve Giriş Belgeleri")
+        st.info("⚠️ Diğer sınıflar için sol menüdeki **'SINIF SEÇİNİZ'** kısmını kullanın.")
+        
+        sifre = st.text_input("Giriş Şifresi:", type="password")
+        if sifre == "darder47":
+            kurum = st.selectbox("Raporlanacak Okul:", ["Tüm İlçe Listesi"] + sorted(df['OKUL ADI'].unique()))
+            f_df = df if kurum == "Tüm İlçe Listesi" else df[df['OKUL ADI'] == kurum]
+
+            # Tablo
+            st.dataframe(f_df[['İlçe Sırası', 'Okul Sırası', 'OKUL ADI', 'Sınıf', 'Şube', 'Öğrenci No', 'Ad', 'Soyad', 'Net', 'Puan']], use_container_width=True)
+
+            st.divider()
+            st.subheader("🎟️ Sınav Giriş Belgelerini Hazırla")
+            baraj = st.number_input("Giriş Belgesi İçin Baraj Puanı:", value=75)
+            belge_df = f_df[f_df['Puan'] >= baraj]
+            
+            if not belge_df.empty:
+                c_a1, c_a2, c_a3 = st.columns(3)
+                s_adi = c_a1.text_input("Sınav Adı:", value="1. MATEMATİK OLİMPİYATI")
+                s_yeri = c_a2.text_input("Sınav Yeri:", value="Dargeçit Anadolu Lisesi")
+                s_tarih = c_a3.text_input("Tarih:", value="18 Mayıs 2026 - 10:00")
+
+                # KUSURSUZ YERLEŞİMLİ (BOŞ SAYFA ATMAYAN) HTML
+                belge_html = """
+                <html><head><meta charset="utf-8"><style>
+                    @page { size: A4 portrait; margin: 10mm; }
+                    * { box-sizing: border-box; }
+                    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; color: #111827; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                    .sayfa { width: 100%; height: 2
     }
     .main { background-color: var(--acik-gri); }
     .header-banner { 
