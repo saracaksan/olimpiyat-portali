@@ -347,10 +347,10 @@ with tab_idareci:
                     st.plotly_chart(fig, use_container_width=True)
 
             # -----------------------------------------------------
-            # ALT SEKME 2: KURUM DENETİM RÖNTGENİ (İDARECİ TENKİT RAPORU)
+            # ALT SEKME 2: KURUM RAPORLARI (İDARECİ TENKİT RAPORU)
             # -----------------------------------------------------
             with sub2:
-                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum Denetim, Tenkit ve Gelişim Raporları")
+                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum  Gelişim Raporları")
                 st.info("Bu bölümdeki raporlar, okulların eksikliklerini ve zümre öğretmenlerinin performanslarını net bir dille idarecilere sunmak için tasarlanmıştır.")
                 
                 if df_aktif.empty:
