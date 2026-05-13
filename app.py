@@ -150,7 +150,7 @@ with st.sidebar:
 df_aktif = df_tum[df_tum['Sınıf'] == kademe_no].copy() if not df_tum.empty else pd.DataFrame()
 
 # --- ANA SEKMELER ---
-tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ İDARE VE MİLLİ EĞİTİM RÖNTGENİ"])
+tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ OKUL TOPLU SONUÇ"])
 
 # ==============================================================================
 # 2. BÖLÜM: ÖĞRENCİ GİRİŞİ, TABLOLU ÖN İZLEME VE OPTİKLİ PEDAGOJİK KARNE
@@ -317,7 +317,7 @@ with tab_idareci:
         else:
             sub1, sub2, sub3, sub4 = st.tabs([
                 "🏆 İLÇE GENEL BAŞARI RAPORU", 
-                "📈 KURUM DENETİM RÖNTGENİ", 
+                "📈 KURUM RAPORLARI", 
                 "📉 ŞUBE / ÖĞRETMEN ANALİZİ", 
                 "📑 TOPLU LİSTELER VE KARNELER"
             ])
