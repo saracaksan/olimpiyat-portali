@@ -139,11 +139,14 @@ with tab_ogrenci:
     else:
         st.markdown(f"### 🔍 {secilen_kademe_str} Bireysel Sonuç Öğrenme")
         
-        # Sadece öğrenci numarası ile giriş yapılması için okul seçimi kaldırıldı
-        no_secim = st.text_input("Öğrenci Numaranız:", key="ogr_no", placeholder="Okul numaranızı giriniz...").strip().lstrip('0')
+        col1, col2 = st.columns(2)
+        with col1:
+            okul_secim = st.selectbox("Okulunuz:", sorted(df_aktif['OKUL ADI'].dropna().unique()), key="ogr_okul")
+        with col2:
+            no_secim = st.text_input("Öğrenci Numaranız:", key="ogr_no", placeholder="Okul numaranızı giriniz...").strip().lstrip('0')
             
         if st.button("Karnemi Görüntüle", type="primary"):
-            sonuc = df_aktif[df_aktif['Arama_No'] == no_secim]
+            sonuc = df_aktif[(df_aktif['OKUL ADI'] == okul_secim) & (df_aktif['Arama_No'] == no_secim)]
             
             if no_secim == "":
                 st.warning("Lütfen sonucunuzu görmek için öğrenci numaranızı giriniz.")
