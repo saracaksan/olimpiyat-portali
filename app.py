@@ -104,7 +104,10 @@ def verileri_yukle():
         except: pass
     if liste:
         return pd.concat(liste, ignore_index=True).sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
-       # --- YAN MENÜ (KADEME SEÇİMİ) ---
+    return pd.DataFrame()
+
+df_tum = verileri_yukle()
+# --- YAN MENÜ (KADEME SEÇİMİ) ---
 with st.sidebar:
     st.markdown('<h3 style="color:#E30A17; text-align:center;">📊 KADEME SEÇİMİ</h3>', unsafe_allow_html=True)
     sinif_listesi = [f"{i}. Sınıf" for i in range(4, 13)]
@@ -472,6 +475,3 @@ with tab_idareci:
 
     elif sifre != "":
         st.error("❌ Yetkisiz Erişim: Şifre Hatalı!")
-    return pd.DataFrame()
-
-df_tum = verileri_yukle()
