@@ -19,95 +19,37 @@ st.markdown("""
     }
     .main { background-color: var(--light-bg); }
     
-    /* Mobil Ekranlar İçin Ortalanmış ve Tam Sığan Seçim Alanları */
     .selector-box { 
-        background: white; 
-        padding: 20px; 
-        border-radius: 12px; 
-        border: 2px solid #e2e8f0; 
-        border-top: 5px solid var(--navy); 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        margin-bottom: 25px; 
-        width: 100%;
-        text-align: center;
+        background: white; padding: 20px; border-radius: 12px; 
+        border: 2px solid #e2e8f0; border-top: 5px solid var(--navy); 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
+        width: 100%; text-align: center;
     }
     .selector-box > div { margin: 0 auto; }
 
-    /* Profesyonel Karne Tasarımı - Taşmaları Önleyen Yapı */
     .result-card { 
-        background: white; 
-        padding: 20px; 
-        border-radius: 12px; 
-        border: 1px solid #e2e8f0; 
-        border-top: 6px solid var(--meb-red); 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-        margin-bottom: 20px; 
-        overflow: hidden; 
+        background: white; padding: 20px; border-radius: 12px; 
+        border: 1px solid #e2e8f0; border-top: 6px solid var(--meb-red); 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; 
     }
     
-    .metric-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
-        gap: 10px; 
-        margin: 15px 0; 
-    }
-    .metric-box { 
-        background: var(--card-bg); 
-        padding: 12px 5px; 
-        border-radius: 8px; 
-        text-align: center; 
-        border: 1px solid #e2e8f0; 
-    }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin: 15px 0; }
+    .metric-box { background: var(--card-bg); padding: 12px 5px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0; }
     .metric-box span { display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
     .metric-box b { font-size: clamp(18px, 4vw, 24px); color: var(--navy); }
 
-    /* Optik Tablo - Mobilde Kaydırılabilir (Taşmaz) */
-    .optik-container { 
-        width: 100%; 
-        overflow-x: auto; 
-        margin-top: 15px; 
-        border-radius: 8px; 
-        border: 1px solid #e2e8f0; 
-        -webkit-overflow-scrolling: touch;
-    }
-    .optik-table { 
-        width: 100%; 
-        border-collapse: collapse; 
-        font-size: 12px; 
-        text-align: center; 
-        min-width: 600px; /* Mobilde scroll çıkması için min genişlik */
-    }
+    .optik-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; }
+    .optik-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; min-width: 600px; }
     .optik-table th { background: #111827; color: white; padding: 8px; border: 1px solid #334155; }
     .optik-table td { padding: 8px; border: 1px solid #e2e8f0; font-weight: 700; }
     .dogru { background-color: #dcfce7 !important; color: #166534 !important; }
     .yanlis { background-color: #111827 !important; color: white !important; }
 
-    .rehberlik-box { 
-        background: #fffafa; 
-        border-left: 5px solid var(--meb-red); 
-        padding: 15px; 
-        border-radius: 8px; 
-        margin-top: 15px; 
-        font-size: 14px; 
-        line-height: 1.6; 
-        color: #1e293b; 
-        text-align: justify; 
-    }
+    .rehberlik-box { background: #fffafa; border-left: 5px solid var(--meb-red); padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; line-height: 1.6; color: #1e293b; text-align: justify; }
     
-    .stButton>button { 
-        width: 100%; 
-        border-radius: 8px; 
-        font-weight: 700; 
-        height: 3.5em; 
-        background: var(--navy); 
-        color: white; 
-        transition: 0.3s; 
-        border: none; 
-        margin-top: 10px;
-    }
+    .stButton>button { width: 100%; border-radius: 8px; font-weight: 700; height: 3.5em; background: var(--navy); color: white; transition: 0.3s; border: none; margin-top: 10px; }
     .stButton>button:hover { background: var(--meb-red); transform: translateY(-2px); }
     
-    /* Sekme başlıklarını mobilde düzgün göstermek için */
     .stTabs [data-baseweb="tab-list"] { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
     .stTabs [data-baseweb="tab"] { padding: 10px 15px; font-size: 14px; white-space: normal; text-align: center; }
     </style>
@@ -147,48 +89,6 @@ def detayli_pedagojik_analiz(row):
     kapanis = "<br><br><b>Başarı yolculuğunda azmin en büyük gücün olsun. Yolun açık olsun!</b>"
     return giris + felsefe + durum + kapanis
 
-# --- 2. İDARECİ İÇİN SINIF BAZLI (ZÜMRE) DURUM RAPORU ---
-def idari_sinif_bazli_rapor(okul_adi, sinif_derece, okul_ort, ilce_ort, df_subeler):
-    fark = okul_ort - ilce_ort
-    metin = f"<h4 style='color:#E30A17; margin-top:0;'>{sinif_derece}. Sınıflar Düzeyinde Kurumsal Değerlendirme</h4>"
-    metin += f"Kurumunuzdaki {sinif_derece}. sınıfların olimpiyat puan ortalaması <b>{okul_ort:.2f}</b> olarak gerçekleşmiş olup, ilçe genel ortalamasının ({ilce_ort:.2f}) "
-    
-    if fark > 5:
-        metin += "<b>çok üzerindedir.</b> Bu üstün başarı; okul idaresinin vizyoner liderliği ve zümre öğretmenlerinin akademik planlamadaki yüksek pedagojik gayretinin doğrudan sonucudur. Öğrencilerin yeni nesil analitik düşünme becerilerinde üst düzeye ulaştığı görülmektedir. Bu ivmenin korunması elzemdir."
-    elif fark >= -2:
-        metin += "<b>civarında, istikrarlı bir seyir izlemektedir.</b> Akademik işleyiş genel hatlarıyla başarılı olsa da, kurumu bir üst seviyeye taşımak ve zirveyi zorlamak adına zümre öğretmenlerimizin yeni nesil soru çözüm tekniklerine (muhakeme ve mantık becerilerine) sınıf içi uygulamalarda daha fazla ağırlık vermesi tavsiye edilmektedir."
-    else:
-        metin += "<b>belirgin şekilde gerisinde kalmıştır.</b> Bu tablo; mazeret üretmeksizin başarısızlığın kök nedenlerinin tespit edilmesini gerektirmektedir. Sınav kaygısı, temel işlem eksiklikleri veya öğrencilerin yeni nesil sorulara aşinalık eksikliği zümre toplantılarında acilen masaya yatırılmalı ve telafi eğitimlerine hızla başlanmalıdır."
-        
-    metin += "<br><br><b style='color:#111827;'>🔍 Şube (Sınıf İçi) Performans İncelemesi:</b><br>"
-    for _, r in df_subeler.iterrows():
-        metin += f"&bull; <b>{r['Şube']} Şubesi:</b> {r['Mevcut']} öğrenci ile <b>{r['Sube_Ort_Puan']:.2f}</b> puan ortalaması sergilemiştir.<br>"
-    
-    if len(df_subeler) > 1:
-        en_iyi = df_subeler.iloc[0]
-        metin += f"<br><i>Not:</i> Veriler incelendiğinde <b>{en_iyi['Şube']}</b> şubesinin {en_iyi['Sube_Ort_Puan']:.2f} ortalama ile okulu sırtladığı görülmektedir. Bu sınıfta uygulanan iyi öğretim örneklerinin (soru çözüm teknikleri, ek materyal kullanımı vb.) zümre toplantılarında diğer öğretmenlerle paylaşılması kurumsal başarıyı artıracaktır."
-        
-    return metin
-
-# --- 3. İDARECİ İÇİN OKUL GENEL (TÜM KADEMELER HARMANLANMIŞ) DURUM RAPORU ---
-def idari_okul_genel_rapor(okul_adi, df_okul_tum, ilce_genel_ort):
-    okul_genel_ort = df_okul_tum['Puan'].mean()
-    fark = okul_genel_ort - ilce_genel_ort
-    toplam_ogrenci = len(df_okul_tum)
-    katilan_kademeler = sorted(list(df_okul_tum['Sınıf'].unique()))
-    kademeler_str = ", ".join([str(k) for k in katilan_kademeler])
-    
-    metin = f"<h4 style='color:#111827; margin-top:0;'>Okul Geneli (Tüm Kademeler Toplamı) Kurumsal Brifing Raporu</h4>"
-    metin += f"Kurumunuz, Dargeçit Matematik Olimpiyatı'na <b>{kademeler_str}. sınıf</b> kademelerinde toplam <b>{toplam_ogrenci} öğrenci</b> ile katılım göstermiştir. Kademeler arası tüm verilerin harmanlanmasıyla elde edilen <b>Okul Genel Ağırlıklı Ortalaması {okul_genel_ort:.2f}</b> puandır. (İlçe Genel Ort: {ilce_genel_ort:.2f})<br><br>"
-    
-    if fark > 3:
-        metin += "Okul idaresinin oluşturduğu olumlu eğitim iklimi ve öğretmen kadrosunun fedakar çalışmaları sayesinde kurumunuz, Dargeçit ilçesindeki genel akademik seviyenin üzerinde konumlanarak <b>lider eğitim yuvalarından biri olduğunu kesin bir şekilde kanıtlamıştır.</b> Tüm paydaşları tebrik eder, kurumsal vizyonun artarak devam etmesini dileriz."
-    elif fark >= -3:
-        metin += "Kurumunuz, ilçe geneliyle rekabet edebilen, <b>başarı potansiyeli yüksek bir tablo</b> sergilemektedir. Ancak okulu bir üst segmente taşımak ve potansiyeli tam kapasite kullanmak için idareci-öğretmen-veli işbirliğinin artırılması, özellikle analitik okuryazarlık alanında okul çapında genel denemeler planlanması gerekmektedir."
-    else:
-        metin += "Kurumsal bazda elde edilen sonuçlar, <b>okul geneli akademik eylem planının ivedilikle revize edilmesini</b> zorunlu kılmaktadır. İdarecilerimizin eğitim-öğretim süreçlerini daha yakından takip etmesi, okul içi motivasyon çalışmaları yapması ve temel beceri eksikliği yaşayan öğrencilere yönelik topyekün bir seferberlik başlatması şarttır."
-    return metin
-
 # --- YENİ EKSİKSİZ VERİ YÜKLEME ALTYAPISI (CSV VE EXCEL TAM DESTEK) ---
 @st.cache_data
 def verileri_yukle():
@@ -205,16 +105,14 @@ def verileri_yukle():
                     continue
                     
                 if 'Puan' in df.columns and 'Öğrenci No' in df.columns:
-                    # Numaraları mobil klavye girişlerine uygun temizle
                     df['Arama_No'] = df['Öğrenci No'].astype(str).str.replace('.0', '', regex=False).str.strip().str.lstrip('0')
                     df['Sınıf'] = df['Sınıf'].astype(str).str.replace('.0', '', regex=False).str.strip()
                     liste.append(df)
-            except Exception as e: 
+            except Exception: 
                 pass
                 
     if liste:
         birlestirilmis = pd.concat(liste, ignore_index=True)
-        # Çift dosya yüklenmesine karşı mükerrer kayıtları temizle
         birlestirilmis = birlestirilmis.drop_duplicates(subset=['Öğrenci No', 'OKUL ADI', 'Sınıf'])
         return birlestirilmis.sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
     return pd.DataFrame()
@@ -225,7 +123,6 @@ df_tum = verileri_yukle()
 # ==============================================================================
 
 # --- ANA SEKMELER ---
-# Sekme isimlerinde Türkçe karakterler eksiksiz ve doğru kullanılmıştır.
 tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ İDARE VE KURUM DURUM ANALİZİ"])
 
 with tab_ogrenci:
@@ -235,7 +132,7 @@ with tab_ogrenci:
     # --- MOBİL UYUMLU, ORTALANMIŞ ARAMA PANELİ ---
     st.markdown('<div class="selector-box">', unsafe_allow_html=True)
     
-    # 1. Adım: Okul Seçimi (Eğer veri yoksa hata vermemesi için kontrol)
+    # 1. Adım: Okul Seçimi
     okul_listesi = ["Okul Seçiniz..."] + sorted(df_tum['OKUL ADI'].dropna().unique().tolist()) if not df_tum.empty else ["Veri Yok"]
     secilen_okul = st.selectbox("1️⃣ Okulunuzu Seçiniz:", okul_listesi)
     
@@ -261,7 +158,7 @@ with tab_ogrenci:
         elif not girilen_no:
             st.error("⚠️ Lütfen öğrenci numaranızı giriniz.")
         else:
-            # Sadece seçilen okul, sınıf ve numaraya göre kesin eşleşme aranır
+            # Okul, sınıf ve numaranın üçünün de eşleştiği kaydı arıyoruz
             sonuc = df_tum[(df_tum['OKUL ADI'] == secilen_okul) & 
                            (df_tum['Sınıf'] == secilen_sinif) & 
                            (df_tum['Arama_No'] == girilen_no)]
@@ -270,7 +167,7 @@ with tab_ogrenci:
                 st.balloons()
                 o = sonuc.iloc[0]
                 
-                # Pedagojik Analiz Motorunu Çağırıyoruz
+                # Sizin yazdığınız pedagojik analiz motorunu çağırıyoruz
                 analiz_html = detayli_pedagojik_analiz(o)
                 
                 # --- OPTİK FORM DÖNÜŞÜMÜ VE KONTROLÜ ---
@@ -292,7 +189,7 @@ with tab_ogrenci:
                     elif c != k and c != "-": optik_ogr += f"<td class='yanlis'>{c}</td>"
                     else: optik_ogr += f"<td>{c}</td>"
 
-                # AŞAMA 1: KARNE ARAYÜZÜ (Mobil ekranlardan taşmaması için CSS ile korunaklı)
+                # AŞAMA 1: EKRANDAKİ KARNE ARAYÜZÜ (Mobil ekranlardan taşmaz)
                 st.markdown(f"""
                 <div class="result-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:15px; flex-wrap:wrap; gap:10px;">
@@ -329,7 +226,7 @@ with tab_ogrenci:
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # AŞAMA 2: BİREYSEL PDF İNDİRME KODU
+                # AŞAMA 2: BİREYSEL PDF İNDİRME KODU (İndirilebilir karne)
                 bireysel_pdf_html = f"""
                 <html><head><meta charset="utf-8"><style>
                     @page {{ size: A4 portrait; margin: 15mm; }}
@@ -387,215 +284,253 @@ with tab_ogrenci:
                 """
                 st.download_button(f"📥 Bireysel Karne İndir (PDF)", data=bireysel_pdf_html, file_name=f"{o['Ad']}_{o['Soyad']}_Karne.html", mime="text/html")
             else:
-                st.error("❌ Sistemde eşleşen kayıt bulunamadı. Lütfen bilgileri kontrol ediniz.")
+                st.error("❌ Sistemde eşleşen kayıt bulunamadı. Lütfen okul, sınıf ve numara bilgilerinizi kontrol ediniz.")
 # ==============================================================================
-# 3. BÖLÜM: İDARE VE KURUM DURUM ANALİZİ (TOPLU SONUÇLAR VE RÖNTGEN)
+# 3. BÖLÜM: İDARE PANELİ (ESNEK FİLTRELEME, DİNAMİK GRAFİKLER VE OTOMATİK YORUMLAR)
 # ==============================================================================
 with tab_idareci:
     st.markdown("### 🔐 İlçe Milli Eğitim ve Kurum Yönetim Paneli")
     sifre = st.text_input("Yetkili Giriş Şifresi:", type="password")
-    
+
     if sifre == "darder47":
         if df_tum.empty:
             st.error("Sistemde analiz edilecek sonuç verisi bulunamadı.")
         else:
-            sub1, sub2, sub3, sub4 = st.tabs([
-                "🏆 İLÇE GENEL DURUMU", 
-                "📈 KURUM GELİŞİM RAPORU", 
-                "📉 ŞUBE / ÖĞRETMEN ANALİZİ", 
-                "📑 TÜM SINIFLAR TOPLU LİSTE/KARNE"
-            ])
+            st.success("Giriş Başarılı. Yönetim Paneline Hoş Geldiniz.")
 
-            # -----------------------------------------------------
-            # ALT SEKME 1: İLÇE GENEL BAŞARI RAPORU
-            # -----------------------------------------------------
-            with sub1:
-                st.markdown("#### 🏢 İlçe Geneli Toplu Sınav İstatistikleri (Tüm Kademeler)")
-                st.markdown("<div class='metric-grid'>", unsafe_allow_html=True)
-                c_m1, c_m2, c_m3, c_m4 = st.columns(4)
-                with c_m1: st.markdown(f"<div class='metric-box'><span>Toplam Öğrenci</span><b>{len(df_tum)}</b></div>", unsafe_allow_html=True)
-                with c_m2: st.markdown(f"<div class='metric-box'><span>Katılımcı Kurum</span><b>{df_tum['OKUL ADI'].nunique()}</b></div>", unsafe_allow_html=True)
-                with c_m3: st.markdown(f"<div class='metric-box'><span>İlçe Genel Puan Ort.</span><b>{df_tum['Puan'].mean():.2f}</b></div>", unsafe_allow_html=True)
-                with c_m4: st.markdown(f"<div class='metric-box'><span>İlçe Genel Net Ort.</span><b style='color:#E30A17;'>{df_tum['Net'].mean():.2f}</b></div>", unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                df_okul_genel = df_tum.groupby('OKUL ADI').agg(Ogr_Sayisi=('Puan', 'count'), Ort_Puan=('Puan', 'mean')).reset_index()
-                
-                st.markdown("##### 📊 Kurumlar Arası Genel Başarı Kıyaslaması", unsafe_allow_html=True)
-                fig = px.bar(df_okul_genel.sort_values(by='Ort_Puan', ascending=True), 
-                             x='Ort_Puan', y='OKUL ADI', orientation='h', text_auto='.2f', 
-                             color='Ort_Puan', color_continuous_scale='Reds')
-                fig.update_layout(height=400, margin=dict(l=0, r=0, t=30, b=0), xaxis_title="Puan Ortalaması", yaxis_title="")
-                st.plotly_chart(fig, use_container_width=True)
+            # --- DİNAMİK FİLTRELEME ALANI (Tam Esnek Yapı) ---
+            st.markdown("#### ⚙️ Raporlama ve Filtreleme Seçenekleri")
+            st.info("💡 Buradan seçeceğiniz kriterler; hem aşağıdaki başarı grafiklerini hem de 4. bölümde indireceğiniz toplu listeleri ve karneleri şekillendirecektir.")
+            
+            c_f1, c_f2 = st.columns(2)
+            with c_f1:
+                okul_secenekleri = ["Tüm İlçe (Genel)"] + sorted(df_tum['OKUL ADI'].dropna().unique().tolist())
+                idare_okul = st.selectbox("1. Kurum Seçimi:", okul_secenekleri)
+            with c_f2:
+                # Eğer belirli bir okul seçilmişse, sadece o okulun sınıflarını listele
+                if idare_okul == "Tüm İlçe (Genel)":
+                    sinif_secenekleri = ["Tüm Sınıflar Kademesi"] + sorted(df_tum['Sınıf'].dropna().unique().tolist())
+                else:
+                    sinif_secenekleri = ["Tüm Sınıflar Kademesi"] + sorted(df_tum[df_tum['OKUL ADI'] == idare_okul]['Sınıf'].dropna().unique().tolist())
+                idare_sinif = st.selectbox("2. Sınıf Kademesi Seçimi:", sinif_secenekleri)
 
-            # -----------------------------------------------------
-            # ALT SEKME 2: KURUM GELİŞİM RAPORU (Sınıf ve Okul Bazlı)
-            # -----------------------------------------------------
-            with sub2:
-                st.markdown("#### 📈 Kurum Denetim ve Gelişim Raporları (MEM Formatı)")
-                st.info("Bu bölüm, okulların eksikliklerini ve zümre performanslarını net bir dille idarecilere sunmak için tasarlanmıştır.")
-                
-                secilen_kurum_rapor = st.selectbox("Ön İzleme Yapılacak Okulu Seçiniz:", sorted(df_tum['OKUL ADI'].dropna().unique()), key="gelisim_okul")
-                
-                df_kurum_tum = df_tum[df_tum['OKUL ADI'] == secilen_kurum_rapor]
-                ilce_ort_genel = df_tum['Puan'].mean()
-                
-                # Okul Geneli Analiz
-                metin_okul = idari_okul_genel_rapor(secilen_kurum_rapor, df_kurum_tum, ilce_ort_genel)
-                
-                st.markdown(f"""
-                <div style="background:white; padding:20px; border-radius:12px; border-left:8px solid var(--meb-red); box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-bottom:20px;">
-                    {metin_okul}
-                </div>
-                """, unsafe_allow_html=True)
+            # --- SEÇİME GÖRE VERİYİ FİLTRELEME ---
+            if idare_okul == "Tüm İlçe (Genel)":
+                df_idare = df_tum.copy()
+                kapsam_metni = "İlçe Geneli"
+            else:
+                df_idare = df_tum[df_tum['OKUL ADI'] == idare_okul].copy()
+                kapsam_metni = idare_okul
 
-                # Sınıf Bazlı Analizler (Döngü ile tüm sınıflar ekrana basılır)
-                siniflar_kurum = sorted(df_kurum_tum['Sınıf'].dropna().unique())
-                for s in siniflar_kurum:
-                    df_kurum_sinif = df_kurum_tum[df_kurum_tum['Sınıf'] == s]
-                    ilce_ort_sinif = df_tum[df_tum['Sınıf'] == s]['Puan'].mean()
-                    okul_ort_sinif = df_kurum_sinif['Puan'].mean()
-                    df_subeler = df_kurum_sinif.groupby('Şube').agg(Mevcut=('Puan', 'count'), Sube_Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sube_Ort_Puan', ascending=False)
-                    
-                    metin_sinif = idari_sinif_bazli_rapor(secilen_kurum_rapor, s, okul_ort_sinif, ilce_ort_sinif, df_subeler)
-                    st.markdown(f"""
-                    <div style="background:white; padding:15px; border-radius:8px; border-left:5px solid var(--navy); box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:10px;">
-                        {metin_sinif}
-                    </div>
-                    """, unsafe_allow_html=True)
+            if idare_sinif != "Tüm Sınıflar Kademesi":
+                df_idare = df_idare[df_idare['Sınıf'] == idare_sinif].copy()
+                kapsam_metni += f" ({idare_sinif}. Sınıflar)"
+            else:
+                kapsam_metni += " (Tüm Kademeler)"
 
-            # -----------------------------------------------------
-            # ALT SEKME 3: ŞUBE / ÖĞRETMEN ANALİZİ
-            # -----------------------------------------------------
-            with sub3:
-                st.markdown("#### 📉 İlçe Geneli En Başarılı Şubeler (Zümre Performansı)")
-                df_sube_genel = df_tum.groupby(['OKUL ADI', 'Sınıf', 'Şube']).agg(Ogr=('Puan', 'count'), Puan_Ort=('Puan', 'mean')).reset_index()
-                # Sadece en az 3 öğrencisi olan şubeleri analize dahil et
-                df_sube_genel = df_sube_genel[df_sube_genel['Ogr'] >= 3].sort_values(by='Puan_Ort', ascending=True).tail(15)
-                df_sube_genel['Sube_Ad'] = df_sube_genel['OKUL ADI'] + " (" + df_sube_genel['Sınıf'] + "/" + df_sube_genel['Şube'] + ")"
-                
-                fig3 = px.bar(df_sube_genel, x='Puan_Ort', y='Sube_Ad', orientation='h', text_auto='.2f', color='Puan_Ort', color_continuous_scale='Teal')
-                fig3.update_layout(height=500, margin=dict(l=0, r=0, t=30, b=0), yaxis_title="")
-                st.plotly_chart(fig3, use_container_width=True)
+            # Verileri Oturum Hafızasına Alalım ki 4. Bölümde Toplu PDF için kullanabilelim
+            st.session_state['df_idare_filtrelenmis'] = df_idare
+            st.session_state['kapsam_metni'] = kapsam_metni
 
-            # -----------------------------------------------------
-            # ALT SEKME 4: OKUL MÜDÜRLERİ İÇİN "TÜM SINIFLAR" TOPLU LİSTE/KARNE
-            # -----------------------------------------------------
-            with sub4:
-                st.markdown("#### 📑 Okul Bazlı TÜM SINIFLAR (Toplu Liste ve Karneler)")
-                st.success("👨‍💼 **Okul Müdürleri İçin:** Bu bölümden, okulunuzdaki **TÜM SINIF KADEMELERİNE** ait başarı listelerini ve Sayfada 2'li Karneleri (Açıklamalar kesilmeden) tek seferde PDF olarak alabilirsiniz.")
-                
-                okul_listesi_genel = ["Tüm İlçe Listesi"] + sorted(df_tum['OKUL ADI'].dropna().unique().tolist())
-                kurum_secim_tum = st.selectbox("İndirilecek Kurumu Seçin:", okul_listesi_genel, key="toplu_karne_okul_tum")
-                
-                if kurum_secim_tum == "Tüm İlçe Listesi": 
-                    df_filtre = df_tum.copy()
-                else: 
-                    df_filtre = df_tum[df_tum['OKUL ADI'] == kurum_secim_tum].copy()
-                
-                # Sınıf ve Puana göre sıralama (En başarılıdan en başarısıza)
-                df_filtre['Sınıf_Int'] = pd.to_numeric(df_filtre['Sınıf'], errors='coerce').fillna(0)
-                df_filtre = df_filtre.sort_values(by=['Sınıf_Int', 'Puan'], ascending=[True, False])
-                
-                st.markdown(f"**Veri Özeti:** Seçilen kurumda toplam **{len(df_filtre)}** öğrencinin verisi işlenmeye hazır.")
-                
-                c_btn1, c_btn2 = st.columns(2)
-                
-                # 1. TÜM KADEMELER LİSTE (PDF)
-                pdf_liste_html = f"""
-                <html><head><meta charset="utf-8"><style>
-                    body {{ font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 12px; }}
-                    .h {{ text-align: center; border-bottom: 2px solid #111827; margin-bottom: 20px; padding-bottom: 10px; }}
-                    table {{ width: 100%; border-collapse: collapse; text-align: center; }}
-                    th {{ background: #111827; color: white; padding: 10px; border: 1px solid #111827; }}
-                    td {{ border: 1px solid #ddd; padding: 8px; }}
-                    .satir-hover:nth-child(even) {{ background-color: #f8fafc; }}
-                </style></head><body>
-                    <div class="h">
-                        <h2 style="margin:0;">T.C. DARGEÇİT KAYMAKAMLIĞI - 1. MATEMATİK OLİMPİYATI</h2>
-                        <h3 style="margin:5px 0 0 0; color:#E30A17;">{kurum_secim_tum} - TÜM SINIFLAR BAŞARI LİSTESİ</h3>
-                    </div>
-                    <table><tr><th>Ad Soyad</th><th>Sınıf/Şube</th><th>No</th><th>Doğru</th><th>Yanlış</th><th>Boş</th><th>Net</th><th>Puan</th></tr>
-                """
-                for _, r in df_filtre.iterrows():
-                    pdf_liste_html += f"<tr class='satir-hover'><td style='text-align:left; font-weight:bold;'>{r['Ad']} {r['Soyad']}</td><td>{r['Sınıf']}/{r['Şube']}</td><td>{r['Öğrenci No']}</td><td>{r['Doğru']}</td><td>{r['Yanlış']}</td><td>{r['Boş']}</td><td>{r['Net']}</td><td style='color:#E30A17; font-weight:bold;'>{r['Puan']}</td></tr>"
-                pdf_liste_html += "</table></body></html>"
-                
-                c_btn1.download_button("📊 1) Tüm Sınıfların Başarı Listesini İndir (PDF)", data=pdf_liste_html, file_name=f"{kurum_secim_tum}_Toplu_Basari_Listesi.html", mime="text/html")
+            if df_idare.empty:
+                st.warning(f"Seçilen kriterlere uygun ({kapsam_metni}) sınav verisi bulunamadı.")
+            else:
+                # İDARE İÇ SEKMELERİ
+                idare_tab1, idare_tab2 = st.tabs(["📈 BAŞARI GRAFİKLERİ VE İDARİ YORUMLAR", "📑 TOPLU LİSTE VE KARNELER (İndirme Merkezi)"])
 
-                # 2. TÜM KADEMELER KARNE (AÇIKLAMALAR KISALTILMADAN, SAYFADA 2 ADET)
-                html_toplu_karne = """
-                <html><head><meta charset="utf-8"><style>
-                    @page { size: A4 portrait; margin: 10mm; }
-                    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact !important; }
-                    .page { width: 100%; height: 277mm; display: flex; flex-direction: column; gap: 5mm; page-break-after: always; justify-content: flex-start; }
-                    .karne { width: 100%; height: 135mm; border: 3px solid #E30A17; border-radius: 12px; padding: 12px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; page-break-inside: avoid; }
-                    .baslik { text-align: center; font-weight: 900; font-size: 14px; border-bottom: 2px solid #E30A17; padding-bottom: 5px; text-transform: uppercase; margin-bottom: 5px; }
-                    .kimlik { display: flex; justify-content: space-between; font-weight: 900; font-size: 13px; margin-top: 2px; }
-                    .sira { text-align: center; background: #111827; color: white; padding: 4px; border-radius: 6px; font-size: 11px; margin: 5px 0; font-weight: bold; }
-                    .stats { width: 100%; border-collapse: collapse; text-align: center; font-size: 11px; margin-bottom: 5px; }
-                    .stats th { background: #fef2f2; border: 1px solid #fca5a5; padding: 4px; color: #E30A17; }
-                    .stats td { border: 1px solid #fca5a5; padding: 4px; font-weight: 900; font-size: 14px; }
-                    .optik-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 10px; margin-bottom: 5px; }
-                    .optik-table th { background: #fef2f2; border: 1px solid #fca5a5; padding: 3px; color: #E30A17; }
-                    .optik-table td { border: 1px solid #fca5a5; padding: 3px; font-weight: bold; font-size: 10px; }
-                    .optik-table .baslik-hucre { background: #111827; color: white; text-align: left; width: 75px; }
-                    .optik-table .alt-baslik-hucre { background: #f1f5f9; color: #111827; text-align: left; font-size: 9px; }
-                    .dogru { background-color: #dcfce7 !important; color: #059669 !important; }
-                    .yanlis { background-color: #111827 !important; color: white !important; }
-                    .analiz { background: #fffafa !important; border-left: 5px solid #E30A17; padding: 10px; font-size: 11px; line-height: 1.4; text-align: justify; border-radius: 6px; border: 1px solid #fee2e2; color: #111827; flex-grow: 1; }
-                    .imza-kismi { text-align: center; font-weight: bold; font-size: 11px; color: #64748b; margin-top: auto; padding-top: 5px; }
-                </style></head><body>
-                """
+                with idare_tab1:
+                    st.markdown(f"#### 📊 {kapsam_metni} Gelişim Raporu")
+
+                    # Temel Metrikler
+                    met1, met2, met3, met4 = st.columns(4)
+                    met1.markdown(f"<div class='metric-box'><span>Öğrenci Sayısı</span><b>{len(df_idare)}</b></div>", unsafe_allow_html=True)
+                    met2.markdown(f"<div class='metric-box'><span>Ortalama Puan</span><b>{df_idare['Puan'].mean():.2f}</b></div>", unsafe_allow_html=True)
+                    met3.markdown(f"<div class='metric-box'><span>Ortalama Net</span><b>{df_idare['Net'].mean():.2f}</b></div>", unsafe_allow_html=True)
+                    en_yuksek = df_idare['Puan'].max()
+                    met4.markdown(f"<div class='metric-box'><span>En Yüksek Puan</span><b style='color:#059669;'>{en_yuksek}</b></div>", unsafe_allow_html=True)
+
+                    st.markdown("<br>", unsafe_allow_html=True)
+
+                    # --- DİNAMİK GRAFİKLER VE OTOMATİK YORUMLAR ---
+                    if idare_okul == "Tüm İlçe (Genel)":
+                        # 1. GRAFİK: Kurumlar Arası Kıyaslama (İster tüm ilçe, ister tüm ilçenin sadece 4. sınıfları)
+                        df_grup = df_idare.groupby('OKUL ADI').agg(Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Ort_Puan', ascending=True)
+
+                        fig = px.bar(df_grup, x='Ort_Puan', y='OKUL ADI', orientation='h', text_auto='.2f', color='Ort_Puan', color_continuous_scale='Reds', title=f"{kapsam_metni} - Kurumlar Arası Başarı Sıralaması")
+                        fig.update_layout(height=max(400, len(df_grup)*35), margin=dict(l=0, r=0, t=40, b=0))
+                        st.plotly_chart(fig, use_container_width=True)
+
+                        # Otomatik Yorum Üretici
+                        ilce_ort = df_idare['Puan'].mean()
+                        lider_okul = df_grup.iloc[-1]['OKUL ADI']
+                        lider_puan = df_grup.iloc[-1]['Ort_Puan']
+                        zayif_okul = df_grup.iloc[0]['OKUL ADI']
+
+                        yorum = f"<b>📌 MEM Analiz ve Yönlendirme Notu:</b> Seçilen <i>'{kapsam_metni}'</i> kriteri bazında yapılan incelemede ilçe genel olimpiyat ortalamasının <b>{ilce_ort:.2f}</b> olduğu tespit edilmiştir. Grafikte net bir şekilde görüldüğü üzere <b>{lider_okul}</b> kurumu, {lider_puan:.2f} ortalama ile ilçede lider konumdadır ve uyguladığı pedagojik yöntemlerin/soru çözüm tekniklerinin zümre çalıştaylarında diğer kurumlara örnek teşkil etmesi önem arz etmektedir. Diğer yandan, başarı ortalamasının altında kalan kurumlarımızın (özellikle {zayif_okul} vb.) okul idareleri ve matematik zümreleriyle ivedilikle 'Durum Değerlendirme Toplantısı' yapması, öğrencilerin yeni nesil sorulara aşinalığını artıracak eylem planları hazırlaması tavsiye edilmektedir."
+
+                        st.markdown(f"<div style='background:#f8fafc; border-left:6px solid var(--navy); padding:15px; border-radius:8px; font-size:14px; line-height:1.6; margin-bottom:25px;'>{yorum}</div>", unsafe_allow_html=True)
+
+                        # 2. GRAFİK: Sınıf Kademeleri Kıyaslaması (Sadece Tüm Sınıflar Seçiliyse Gösterilir)
+                        if idare_sinif == "Tüm Sınıflar Kademesi":
+                            df_sinif_grup = df_idare.groupby('Sınıf').agg(Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sınıf', ascending=True)
+                            df_sinif_grup['Sınıf_Gorsel'] = df_sinif_grup['Sınıf'] + ". Sınıflar"
+
+                            fig2 = px.bar(df_sinif_grup, x='Sınıf_Gorsel', y='Ort_Puan', text_auto='.2f', color='Ort_Puan', color_continuous_scale='Viridis', title="İlçe Geneli Sınıf Kademeleri Arası Başarı Dağılımı")
+                            fig2.update_layout(height=400, margin=dict(l=0, r=0, t=40, b=0))
+                            st.plotly_chart(fig2, use_container_width=True)
+
+                            en_iyi_kademe = df_sinif_grup.sort_values(by='Ort_Puan').iloc[-1]['Sınıf_Gorsel']
+                            yorum2 = f"<b>📌 Kademe Analiz Notu:</b> İlçe genelinde farklı sınıf düzeyleri kıyaslandığında, en yüksek verimin ve olimpiyat uyumunun <b>{en_iyi_kademe}</b> düzeyinde gerçekleştiği görülmektedir. Olimpiyat sorularının analitik yapısı ve öğrencilerin bilişsel gelişimleri dikkate alındığında, grafikte düşük kalan kademeler için zümre bazında öğretim stratejileri güncellenmeli, çocuklara mantık-muhakeme oyunları ve pratikleri yaptırılmalıdır."
+                            st.markdown(f"<div style='background:#f8fafc; border-left:6px solid var(--meb-red); padding:15px; border-radius:8px; font-size:14px; line-height:1.6;'>{yorum2}</div>", unsafe_allow_html=True)
+
+                    else:
+                        # TEK BİR OKUL SEÇİLDİYSE: ŞUBE BAZLI ZÜMRE KIYASLAMA
+                        df_sube_grup = df_idare.groupby(['Sınıf', 'Şube']).agg(Ort_Puan=('Puan', 'mean')).reset_index()
+                        df_sube_grup['Sube_Ad'] = df_sube_grup['Sınıf'] + "/" + df_sube_grup['Şube']
+                        df_sube_grup = df_sube_grup.sort_values(by='Ort_Puan', ascending=True)
+
+                        fig3 = px.bar(df_sube_grup, x='Ort_Puan', y='Sube_Ad', orientation='h', text_auto='.2f', color='Ort_Puan', color_continuous_scale='Teal', title=f"{kapsam_metni} - Şubeler (Zümre) Arası Başarı Sıralaması")
+                        fig3.update_layout(height=max(400, len(df_sube_grup)*40), margin=dict(l=0, r=0, t=40, b=0))
+                        st.plotly_chart(fig3, use_container_width=True)
+
+                        okul_ort = df_idare['Puan'].mean()
+                        if len(df_sube_grup) > 1:
+                            lider_sube = df_sube_grup.iloc[-1]['Sube_Ad']
+                            lider_sube_puan = df_sube_grup.iloc[-1]['Ort_Puan']
+                            yorum3 = f"<b>📌 Kurum İçi İdari Analiz Notu:</b> Seçtiğiniz <i>'{kapsam_metni}'</i> filtrelerine göre kurumunuzdaki genel olimpiyat ortalaması <b>{okul_ort:.2f}</b> puandır. Şubeler arası akademik rekabet tablosu incelendiğinde, <b>{lider_sube} şubesinin</b> {lider_sube_puan:.2f} ortalama ile öne çıktığı ve okulu sırtladığı tespit edilmiştir. İlgili sınıfın öğretmenini pedagojik yaklaşımından ötürü tebrik eder; kurumsal topyekün başarının artması adına, tüm şubelerin bu homojen başarı ivmesini yakalaması için sınıf içi farklılaştırılmış eğitim yöntemlerine başvurulmasını idare olarak tavsiye ederiz."
+                        else:
+                            yorum3 = f"<b>📌 Kurum İçi İdari Analiz Notu:</b> Seçilen kriterlerde sınava sadece tek bir şube katılım sağladığı için şubeler arası öğretmen/sınıf kıyaslaması oluşturulamamıştır. Ancak elde edilen <b>{okul_ort:.2f}</b> puanlık sınıf ortalamasının, ilçe geneli ve olimpiyat standartlarına çekilebilmesi için öğrencilerin sınav kaygısı yaşamadan yeni nesil problemlerle daha sık karşılaştırılması (haftalık mini quizler vb.) önerilmektedir."
+
+                        st.markdown(f"<div style='background:#f8fafc; border-left:6px solid #059669; padding:15px; border-radius:8px; font-size:14px; line-height:1.6;'>{yorum3}</div>", unsafe_allow_html=True)
                 
-                for i, row in df_filtre.reset_index().iterrows():
-                    if i % 2 == 0: html_toplu_karne += "<div class='page'>"
-                    
-                    analiz_metni = detayli_pedagojik_analiz(row)
-                    
-                    try:
-                        ogr_cvp = ast.literal_eval(str(row.get('Ogrenci_Cevap_Listesi', "['-']*20")))
-                        key_cvp = ast.literal_eval(str(row.get('Cevap_Anahtari_Listesi', "['-']*20")))
-                    except:
-                        ogr_cvp = ["-"]*20; key_cvp = ["-"]*20
-                        
-                    optik_th = "".join([f"<th>{j+1}</th>" for j in range(20)])
-                    optik_key = "".join([f"<td>{key_cvp[j]}</td>" for j in range(20)])
-                    optik_ogr = ""
-                    for j in range(20):
-                        c = ogr_cvp[j] if j < len(ogr_cvp) else "-"
-                        k = key_cvp[j] if j < len(key_cvp) else "-"
-                        if c == k and c != "-": optik_ogr += f"<td class='dogru'>{c}</td>"
-                        elif c != k and c != "-": optik_ogr += f"<td class='yanlis'>{c}</td>"
-                        else: optik_ogr += f"<td>{c}</td>"
-                    
-                    html_toplu_karne += f"""
-                    <div class="karne">
-                        <div class="baslik">1. DARGEÇİT MATEMATİK OLİMPİYATI SONUÇ BELGESİ</div>
-                        <div class="kimlik"><span>{row['Ad']} {row['Soyad']}</span><span style="color:#E30A17;">No: {row['Öğrenci No']}</span></div>
-                        <div class="kimlik" style="color:#555; font-size:11px;"><span>{row['OKUL ADI']}</span><span>Sınıf: {row['Sınıf']}/{row['Şube']}</span></div>
-                        <div class="sira">İlçe S: {row.get('İlçe Sırası','-')} &nbsp;|&nbsp; Okul S: {row.get('Okul Sırası','-')}</div>
-                        
-                        <table class="stats">
-                            <tr><th>Doğru</th><th>Yanlış</th><th>Boş</th><th>Net</th><th style="background:#E30A17; color:white;">PUAN</th></tr>
-                            <tr><td style="color:#059669;">{row['Doğru']}</td><td style="color:#E30A17;">{row['Yanlış']}</td><td>{row['Boş']}</td><td style="color:#2563eb;">{row['Net']}</td><td style="background:#111827 !important; color:white;">{row['Puan']}</td></tr>
-                        </table>
-                        
-                        <table class="optik-table">
-                            <tr><th class="baslik-hucre">Soru No</th>{optik_th}</tr>
-                            <tr><th class="alt-baslik-hucre">Cevap Anahtarı</th>{optik_key}</tr>
-                            <tr><th class="alt-baslik-hucre">Öğrenci Cevabı</th>{optik_ogr}</tr>
-                        </table>
-                        
-                        <div class="analiz"><b style="color:#E30A17; font-size:12px;">🎓 Pedagojik Değerlendirme:</b><br>{analiz_metni}</div>
-                        <div class="imza-kismi">Dargeçit İlçe Milli Eğitim Müdürlüğü</div>
-                    </div>
-                    """
-                    if (i + 1) % 2 == 0 or i == len(df_filtre) - 1: html_toplu_karne += "</div>"
-                
-                html_toplu_karne += "</body></html>"
-                
-                c_btn2.download_button("🖨️ 2) Tüm Sınıfların Toplu Karnelerini Al (PDF)", data=html_toplu_karne, file_name=f"{kurum_secim_tum}_Toplu_Karneler.html", mime="text/html")
+                # BÖLÜM 4 İÇİN SEKME HAZIRLIĞI
+                with idare_tab2:
+                    st.info("💡 **İndirme Merkezi:** Seçtiğiniz filtrelere ait Başarı Listeleri (PDF) ve Toplu Karneler buraya gelecektir. Lütfen 'Tamam' yazarak son kod bölümünü isteyiniz.")
 
     elif sifre != "":
         st.error("❌ Yetkisiz Erişim: Şifre Hatalı!")
+# ==============================================================================
+                # 4. BÖLÜM: TOPLU LİSTE VE TOPLU KARNE İNDİRME MERKEZİ (Seçilen Filtreye Göre)
+                # ==============================================================================
+                with idare_tab2:
+                    st.markdown(f"#### 📑 {kapsam_metni} - İndirme Merkezi")
+                    st.success("👨‍💼 **Sayın İdareci:** Seçtiğiniz filtrelere ait sıralı başarı listelerini ve sayfada 2'li olarak tasarlanmış toplu karneleri aşağıdan indirebilirsiniz.")
+                    
+                    # Veriyi sıralama (Sınıf sırası ve Puan büyüklüğüne göre en iyiden en kötüye)
+                    df_export = df_idare.copy()
+                    df_export['Sınıf_Int'] = pd.to_numeric(df_export['Sınıf'], errors='coerce').fillna(0)
+                    df_export = df_export.sort_values(by=['Sınıf_Int', 'Puan'], ascending=[True, False])
+                    
+                    st.markdown(f"**Hazırlanan Veri:** {len(df_export)} öğrenci (En yüksek puandan en düşük puana sıralı)")
+                    
+                    c_btn1, c_btn2 = st.columns(2)
+                    
+                    # --- 1. LİSTE OLUŞTURMA ---
+                    pdf_liste_html = f"""
+                    <html><head><meta charset="utf-8"><style>
+                        body {{ font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 12px; }}
+                        .h {{ text-align: center; border-bottom: 2px solid #111827; margin-bottom: 20px; padding-bottom: 10px; }}
+                        table {{ width: 100%; border-collapse: collapse; text-align: center; }}
+                        th {{ background: #111827; color: white; padding: 10px; border: 1px solid #111827; }}
+                        td {{ border: 1px solid #ddd; padding: 8px; }}
+                        .satir-hover:nth-child(even) {{ background-color: #f8fafc; }}
+                    </style></head><body>
+                        <div class="h">
+                            <h2 style="margin:0;">T.C. DARGEÇİT KAYMAKAMLIĞI - 1. MATEMATİK OLİMPİYATI</h2>
+                            <h3 style="margin:5px 0 0 0; color:#E30A17;">{kapsam_metni.upper()} BAŞARI LİSTESİ</h3>
+                        </div>
+                        <table><tr><th>Okul</th><th>Ad Soyad</th><th>Sınıf/Şube</th><th>No</th><th>Doğru</th><th>Yanlış</th><th>Boş</th><th>Net</th><th>Puan</th></tr>
+                    """
+                    for _, r in df_export.iterrows():
+                        pdf_liste_html += f"<tr class='satir-hover'><td>{r['OKUL ADI']}</td><td style='text-align:left; font-weight:bold;'>{r['Ad']} {r['Soyad']}</td><td>{r['Sınıf']}/{r['Şube']}</td><td>{r['Öğrenci No']}</td><td>{r['Doğru']}</td><td>{r['Yanlış']}</td><td>{r['Boş']}</td><td>{r['Net']}</td><td style='color:#E30A17; font-weight:bold;'>{r['Puan']}</td></tr>"
+                    pdf_liste_html += "</table></body></html>"
+                    
+                    # İndirme Butonu (HTML formatında PDF çıktısı için)
+                    c_btn1.download_button(
+                        f"📊 1) {kapsam_metni} Başarı Listesi (İndir)", 
+                        data=pdf_liste_html, 
+                        file_name=f"{kapsam_metni.replace(' ', '_')}_Liste.html", 
+                        mime="text/html"
+                    )
+
+                    # --- 2. TOPLU KARNE OLUŞTURMA (SAYFADA 2 ADET, METİN KISILMADAN) ---
+                    html_toplu_karne = f"""
+                    <html><head><meta charset="utf-8"><style>
+                        @page {{ size: A4 portrait; margin: 10mm; }}
+                        body {{ font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact !important; }}
+                        .page {{ width: 100%; height: 277mm; display: flex; flex-direction: column; gap: 5mm; page-break-after: always; justify-content: flex-start; }}
+                        .karne {{ width: 100%; height: 136mm; border: 3px solid #E30A17; border-radius: 12px; padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; page-break-inside: avoid; }}
+                        .baslik {{ text-align: center; font-weight: 900; font-size: 13px; border-bottom: 2px solid #E30A17; padding-bottom: 4px; text-transform: uppercase; margin-bottom: 4px; color:#111827; }}
+                        .kimlik {{ display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; margin-top: 2px; }}
+                        .sira {{ text-align: center; background: #111827; color: white; padding: 3px; border-radius: 6px; font-size: 11px; margin: 4px 0; font-weight: bold; }}
+                        .stats {{ width: 100%; border-collapse: collapse; text-align: center; font-size: 11px; margin-bottom: 4px; }}
+                        .stats th {{ background: #fef2f2; border: 1px solid #fca5a5; padding: 3px; color: #E30A17; }}
+                        .stats td {{ border: 1px solid #fca5a5; padding: 3px; font-weight: 900; font-size: 13px; }}
+                        .optik-table {{ width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 4px; }}
+                        .optik-table th {{ background: #fef2f2; border: 1px solid #fca5a5; padding: 2px; color: #E30A17; }}
+                        .optik-table td {{ border: 1px solid #fca5a5; padding: 2px; font-weight: bold; font-size: 10px; }}
+                        .optik-table .baslik-hucre {{ background: #111827; color: white; text-align: left; width: 65px; }}
+                        .optik-table .alt-baslik-hucre {{ background: #f1f5f9; color: #111827; text-align: left; font-size: 8px; }}
+                        .dogru {{ background-color: #dcfce7 !important; color: #059669 !important; }}
+                        .yanlis {{ background-color: #111827 !important; color: white !important; }}
+                        .analiz {{ background: #fffafa !important; border-left: 5px solid #E30A17; padding: 8px; font-size: 10.5px; line-height: 1.35; text-align: justify; border-radius: 6px; border: 1px solid #fee2e2; color: #111827; flex-grow: 1; }}
+                        .imza-kismi {{ text-align: center; font-weight: bold; font-size: 10px; color: #64748b; margin-top: auto; padding-top: 3px; }}
+                    </style></head><body>
+                    """
+                    
+                    for i, row in df_export.reset_index().iterrows():
+                        # Her 2 öğrencide bir yeni sayfa açılır
+                        if i % 2 == 0: html_toplu_karne += "<div class='page'>"
+                        
+                        analiz_metni = detayli_pedagojik_analiz(row)
+                        
+                        try:
+                            ogr_cvp = ast.literal_eval(str(row.get('Ogrenci_Cevap_Listesi', "['-']*20")))
+                            key_cvp = ast.literal_eval(str(row.get('Cevap_Anahtari_Listesi', "['-']*20")))
+                        except:
+                            ogr_cvp = ["-"]*20; key_cvp = ["-"]*20
+                            
+                        optik_th = "".join([f"<th>{j+1}</th>" for j in range(20)])
+                        optik_key = "".join([f"<td>{key_cvp[j]}</td>" for j in range(20)])
+                        optik_ogr = ""
+                        for j in range(20):
+                            c = ogr_cvp[j] if j < len(ogr_cvp) else "-"
+                            k = key_cvp[j] if j < len(key_cvp) else "-"
+                            if c == k and c != "-": optik_ogr += f"<td class='dogru'>{c}</td>"
+                            elif c != k and c != "-": optik_ogr += f"<td class='yanlis'>{c}</td>"
+                            else: optik_ogr += f"<td>{c}</td>"
+                        
+                        html_toplu_karne += f'''
+                        <div class="karne">
+                            <div class="baslik">1. DARGEÇİT MATEMATİK OLİMPİYATI SONUÇ BELGESİ</div>
+                            <div class="kimlik"><span>{row['Ad']} {row['Soyad']}</span><span style="color:#E30A17;">No: {row['Öğrenci No']}</span></div>
+                            <div class="kimlik" style="color:#555; font-size:11px;"><span>{row['OKUL ADI']}</span><span>Sınıf: {row['Sınıf']}/{row['Şube']}</span></div>
+                            <div class="sira">İlçe S: {row.get('İlçe Sırası','-')} &nbsp;|&nbsp; Okul S: {row.get('Okul Sırası','-')}</div>
+                            
+                            <table class="stats">
+                                <tr><th>Doğru</th><th>Yanlış</th><th>Boş</th><th>Net</th><th style="background:#E30A17; color:white;">PUAN</th></tr>
+                                <tr><td style="color:#059669;">{row['Doğru']}</td><td style="color:#E30A17;">{row['Yanlış']}</td><td>{row['Boş']}</td><td style="color:#2563eb;">{row['Net']}</td><td style="background:#111827 !important; color:white;">{row['Puan']}</td></tr>
+                            </table>
+                            
+                            <table class="optik-table">
+                                <tr><th class="baslik-hucre">Soru No</th>{optik_th}</tr>
+                                <tr><th class="alt-baslik-hucre">Cevap Anahtarı</th>{optik_key}</tr>
+                                <tr><th class="alt-baslik-hucre">Öğrenci Cevabı</th>{optik_ogr}</tr>
+                            </table>
+                            
+                            <div class="analiz"><b style="color:#E30A17; font-size:11px;">🎓 Pedagojik Değerlendirme:</b><br>{analiz_metni}</div>
+                            <div class="imza-kismi">Dargeçit İlçe Milli Eğitim Müdürlüğü</div>
+                        </div>
+                        '''
+                        # 2 öğrenci bittiğinde veya liste sonuna gelindiğinde sayfayı kapat
+                        if (i + 1) % 2 == 0 or i == len(df_export) - 1: html_toplu_karne += "</div>"
+                    
+                    html_toplu_karne += "</body></html>"
+                    
+                    # İndirme Butonu (HTML formatında PDF çıktısı için)
+                    c_btn2.download_button(
+                        f"🖨️ 2) {kapsam_metni} Toplu Karneler (İndir)", 
+                        data=html_toplu_karne, 
+                        file_name=f"{kapsam_metni.replace(' ', '_')}_Karneler.html", 
+                        mime="text/html"
+                    )
