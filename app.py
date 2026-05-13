@@ -286,7 +286,7 @@ with tab_ogrenci:
             else:
                 st.error("❌ Sistemde eşleşen kayıt bulunamadı. Lütfen okul, sınıf ve numara bilgilerinizi kontrol ediniz.")
 # ==============================================================================
-# 3. BÖLÜM: İDARE PANELİ (ESNEK FİLTRELEME, DİNAMİK GRAFİKLER VE OTOMATİK YORUMLAR)
+# 3. VE 4. BÖLÜM: İDARE PANELİ VE İNDİRME MERKEZİ (BİRLEŞTİRİLMİŞ TAM KOD)
 # ==============================================================================
 with tab_idareci:
     st.markdown("### 🔐 İlçe Milli Eğitim ve Kurum Yönetim Paneli")
@@ -300,14 +300,13 @@ with tab_idareci:
 
             # --- DİNAMİK FİLTRELEME ALANI (Tam Esnek Yapı) ---
             st.markdown("#### ⚙️ Raporlama ve Filtreleme Seçenekleri")
-            st.info("💡 Buradan seçeceğiniz kriterler; hem aşağıdaki başarı grafiklerini hem de 4. bölümde indireceğiniz toplu listeleri ve karneleri şekillendirecektir.")
+            st.info("💡 Buradan seçeceğiniz kriterler; hem aşağıdaki başarı grafiklerini hem de toplu listeleri ve karneleri şekillendirecektir.")
             
             c_f1, c_f2 = st.columns(2)
             with c_f1:
                 okul_secenekleri = ["Tüm İlçe (Genel)"] + sorted(df_tum['OKUL ADI'].dropna().unique().tolist())
                 idare_okul = st.selectbox("1. Kurum Seçimi:", okul_secenekleri)
             with c_f2:
-                # Eğer belirli bir okul seçilmişse, sadece o okulun sınıflarını listele
                 if idare_okul == "Tüm İlçe (Genel)":
                     sinif_secenekleri = ["Tüm Sınıflar Kademesi"] + sorted(df_tum['Sınıf'].dropna().unique().tolist())
                 else:
@@ -328,10 +327,6 @@ with tab_idareci:
             else:
                 kapsam_metni += " (Tüm Kademeler)"
 
-            # Verileri Oturum Hafızasına Alalım ki 4. Bölümde Toplu PDF için kullanabilelim
-            st.session_state['df_idare_filtrelenmis'] = df_idare
-            st.session_state['kapsam_metni'] = kapsam_metni
-
             if df_idare.empty:
                 st.warning(f"Seçilen kriterlere uygun ({kapsam_metni}) sınav verisi bulunamadı.")
             else:
@@ -341,7 +336,6 @@ with tab_idareci:
                 with idare_tab1:
                     st.markdown(f"#### 📊 {kapsam_metni} Gelişim Raporu")
 
-                    # Temel Metrikler
                     met1, met2, met3, met4 = st.columns(4)
                     met1.markdown(f"<div class='metric-box'><span>Öğrenci Sayısı</span><b>{len(df_idare)}</b></div>", unsafe_allow_html=True)
                     met2.markdown(f"<div class='metric-box'><span>Ortalama Puan</span><b>{df_idare['Puan'].mean():.2f}</b></div>", unsafe_allow_html=True)
@@ -351,26 +345,20 @@ with tab_idareci:
 
                     st.markdown("<br>", unsafe_allow_html=True)
 
-                    # --- DİNAMİK GRAFİKLER VE OTOMATİK YORUMLAR ---
                     if idare_okul == "Tüm İlçe (Genel)":
-                        # 1. GRAFİK: Kurumlar Arası Kıyaslama (İster tüm ilçe, ister tüm ilçenin sadece 4. sınıfları)
                         df_grup = df_idare.groupby('OKUL ADI').agg(Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Ort_Puan', ascending=True)
-
                         fig = px.bar(df_grup, x='Ort_Puan', y='OKUL ADI', orientation='h', text_auto='.2f', color='Ort_Puan', color_continuous_scale='Reds', title=f"{kapsam_metni} - Kurumlar Arası Başarı Sıralaması")
                         fig.update_layout(height=max(400, len(df_grup)*35), margin=dict(l=0, r=0, t=40, b=0))
                         st.plotly_chart(fig, use_container_width=True)
 
-                        # Otomatik Yorum Üretici
                         ilce_ort = df_idare['Puan'].mean()
                         lider_okul = df_grup.iloc[-1]['OKUL ADI']
                         lider_puan = df_grup.iloc[-1]['Ort_Puan']
                         zayif_okul = df_grup.iloc[0]['OKUL ADI']
 
                         yorum = f"<b>📌 MEM Analiz ve Yönlendirme Notu:</b> Seçilen <i>'{kapsam_metni}'</i> kriteri bazında yapılan incelemede ilçe genel olimpiyat ortalamasının <b>{ilce_ort:.2f}</b> olduğu tespit edilmiştir. Grafikte net bir şekilde görüldüğü üzere <b>{lider_okul}</b> kurumu, {lider_puan:.2f} ortalama ile ilçede lider konumdadır ve uyguladığı pedagojik yöntemlerin/soru çözüm tekniklerinin zümre çalıştaylarında diğer kurumlara örnek teşkil etmesi önem arz etmektedir. Diğer yandan, başarı ortalamasının altında kalan kurumlarımızın (özellikle {zayif_okul} vb.) okul idareleri ve matematik zümreleriyle ivedilikle 'Durum Değerlendirme Toplantısı' yapması, öğrencilerin yeni nesil sorulara aşinalığını artıracak eylem planları hazırlaması tavsiye edilmektedir."
-
                         st.markdown(f"<div style='background:#f8fafc; border-left:6px solid var(--navy); padding:15px; border-radius:8px; font-size:14px; line-height:1.6; margin-bottom:25px;'>{yorum}</div>", unsafe_allow_html=True)
 
-                        # 2. GRAFİK: Sınıf Kademeleri Kıyaslaması (Sadece Tüm Sınıflar Seçiliyse Gösterilir)
                         if idare_sinif == "Tüm Sınıflar Kademesi":
                             df_sinif_grup = df_idare.groupby('Sınıf').agg(Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sınıf', ascending=True)
                             df_sinif_grup['Sınıf_Gorsel'] = df_sinif_grup['Sınıf'] + ". Sınıflar"
@@ -384,7 +372,6 @@ with tab_idareci:
                             st.markdown(f"<div style='background:#f8fafc; border-left:6px solid var(--meb-red); padding:15px; border-radius:8px; font-size:14px; line-height:1.6;'>{yorum2}</div>", unsafe_allow_html=True)
 
                     else:
-                        # TEK BİR OKUL SEÇİLDİYSE: ŞUBE BAZLI ZÜMRE KIYASLAMA
                         df_sube_grup = df_idare.groupby(['Sınıf', 'Şube']).agg(Ort_Puan=('Puan', 'mean')).reset_index()
                         df_sube_grup['Sube_Ad'] = df_sube_grup['Sınıf'] + "/" + df_sube_grup['Şube']
                         df_sube_grup = df_sube_grup.sort_values(by='Ort_Puan', ascending=True)
@@ -400,23 +387,15 @@ with tab_idareci:
                             yorum3 = f"<b>📌 Kurum İçi İdari Analiz Notu:</b> Seçtiğiniz <i>'{kapsam_metni}'</i> filtrelerine göre kurumunuzdaki genel olimpiyat ortalaması <b>{okul_ort:.2f}</b> puandır. Şubeler arası akademik rekabet tablosu incelendiğinde, <b>{lider_sube} şubesinin</b> {lider_sube_puan:.2f} ortalama ile öne çıktığı ve okulu sırtladığı tespit edilmiştir. İlgili sınıfın öğretmenini pedagojik yaklaşımından ötürü tebrik eder; kurumsal topyekün başarının artması adına, tüm şubelerin bu homojen başarı ivmesini yakalaması için sınıf içi farklılaştırılmış eğitim yöntemlerine başvurulmasını idare olarak tavsiye ederiz."
                         else:
                             yorum3 = f"<b>📌 Kurum İçi İdari Analiz Notu:</b> Seçilen kriterlerde sınava sadece tek bir şube katılım sağladığı için şubeler arası öğretmen/sınıf kıyaslaması oluşturulamamıştır. Ancak elde edilen <b>{okul_ort:.2f}</b> puanlık sınıf ortalamasının, ilçe geneli ve olimpiyat standartlarına çekilebilmesi için öğrencilerin sınav kaygısı yaşamadan yeni nesil problemlerle daha sık karşılaştırılması (haftalık mini quizler vb.) önerilmektedir."
-
                         st.markdown(f"<div style='background:#f8fafc; border-left:6px solid #059669; padding:15px; border-radius:8px; font-size:14px; line-height:1.6;'>{yorum3}</div>", unsafe_allow_html=True)
-                
-                # BÖLÜM 4 İÇİN SEKME HAZIRLIĞI
-                with idare_tab2:
-                    st.info("💡 **İndirme Merkezi:** Seçtiğiniz filtrelere ait Başarı Listeleri (PDF) ve Toplu Karneler buraya gelecektir. Lütfen 'Tamam' yazarak son kod bölümünü isteyiniz.")
 
-    elif sifre != "":
-        st.error("❌ Yetkisiz Erişim: Şifre Hatalı!")
-# ==============================================================================
-                # 4. BÖLÜM: TOPLU LİSTE VE TOPLU KARNE İNDİRME MERKEZİ (Seçilen Filtreye Göre)
+                # ==============================================================================
+                # BÖLÜM 4: TOPLU LİSTE VE TOPLU KARNE İNDİRME MERKEZİ
                 # ==============================================================================
                 with idare_tab2:
                     st.markdown(f"#### 📑 {kapsam_metni} - İndirme Merkezi")
                     st.success("👨‍💼 **Sayın İdareci:** Seçtiğiniz filtrelere ait sıralı başarı listelerini ve sayfada 2'li olarak tasarlanmış toplu karneleri aşağıdan indirebilirsiniz.")
                     
-                    # Veriyi sıralama (Sınıf sırası ve Puan büyüklüğüne göre en iyiden en kötüye)
                     df_export = df_idare.copy()
                     df_export['Sınıf_Int'] = pd.to_numeric(df_export['Sınıf'], errors='coerce').fillna(0)
                     df_export = df_export.sort_values(by=['Sınıf_Int', 'Puan'], ascending=[True, False])
@@ -445,7 +424,6 @@ with tab_idareci:
                         pdf_liste_html += f"<tr class='satir-hover'><td>{r['OKUL ADI']}</td><td style='text-align:left; font-weight:bold;'>{r['Ad']} {r['Soyad']}</td><td>{r['Sınıf']}/{r['Şube']}</td><td>{r['Öğrenci No']}</td><td>{r['Doğru']}</td><td>{r['Yanlış']}</td><td>{r['Boş']}</td><td>{r['Net']}</td><td style='color:#E30A17; font-weight:bold;'>{r['Puan']}</td></tr>"
                     pdf_liste_html += "</table></body></html>"
                     
-                    # İndirme Butonu (HTML formatında PDF çıktısı için)
                     c_btn1.download_button(
                         f"📊 1) {kapsam_metni} Başarı Listesi (İndir)", 
                         data=pdf_liste_html, 
@@ -453,7 +431,7 @@ with tab_idareci:
                         mime="text/html"
                     )
 
-                    # --- 2. TOPLU KARNE OLUŞTURMA (SAYFADA 2 ADET, METİN KISILMADAN) ---
+                    # --- 2. TOPLU KARNE OLUŞTURMA ---
                     html_toplu_karne = f"""
                     <html><head><meta charset="utf-8"><style>
                         @page {{ size: A4 portrait; margin: 10mm; }}
@@ -479,7 +457,6 @@ with tab_idareci:
                     """
                     
                     for i, row in df_export.reset_index().iterrows():
-                        # Her 2 öğrencide bir yeni sayfa açılır
                         if i % 2 == 0: html_toplu_karne += "<div class='page'>"
                         
                         analiz_metni = detayli_pedagojik_analiz(row)
@@ -522,15 +499,16 @@ with tab_idareci:
                             <div class="imza-kismi">Dargeçit İlçe Milli Eğitim Müdürlüğü</div>
                         </div>
                         '''
-                        # 2 öğrenci bittiğinde veya liste sonuna gelindiğinde sayfayı kapat
                         if (i + 1) % 2 == 0 or i == len(df_export) - 1: html_toplu_karne += "</div>"
                     
                     html_toplu_karne += "</body></html>"
                     
-                    # İndirme Butonu (HTML formatında PDF çıktısı için)
                     c_btn2.download_button(
                         f"🖨️ 2) {kapsam_metni} Toplu Karneler (İndir)", 
                         data=html_toplu_karne, 
                         file_name=f"{kapsam_metni.replace(' ', '_')}_Karneler.html", 
                         mime="text/html"
                     )
+
+    elif sifre != "":
+        st.error("❌ Yetkisiz Erişim: Şifre Hatalı!")
