@@ -54,8 +54,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- BİRLEŞİK VE DERİN PEDAGOJİK ANALİZ MOTORU ---
-# Bu fonksiyon hem bireysel hem toplu karnelerde noktası virgülüne aynı içeriği üretir.
+# --- BİRLEŞİK VE DERİN PEDAGOJİK ANALİZ MOTORU (ÖĞRENCİ İÇİN - DOKUNULMADI) ---
 def detayli_pedagojik_analiz(row):
     p, d, y, b, ad = row['Puan'], row['Doğru'], row['Yanlış'], row['Boş'], row['Ad']
     
@@ -89,6 +88,37 @@ def detayli_pedagojik_analiz(row):
     kapanis = "<br><br><b>Başarı yolculuğunda azmin en büyük gücün olsun. Yolun açık olsun!</b>"
     return giris + felsefe + durum + kapanis
 
+# --- YENİ: İDARECİLER VE ZÜMRELER İÇİN PROFESYONEL/TENKİT EDİCİ KURUM RÖNTGEN MOTORU ---
+def idari_pedagojik_rapor(okul_adi, okul_ort, ilce_ort, toplam_ogrenci, df_subeler):
+    fark = okul_ort - ilce_ort
+    
+    # 1. BÖLÜM: KURUMSAL GENEL DEĞERLENDİRME
+    if fark > 5:
+        genel_degerlendirme = f"Kurumunuz, {ilce_ort:.2f} olan ilçe ortalamasının çok üzerinde bir performans sergileyerek <b>{okul_ort:.2f}</b> puan ortalamasına ulaşmıştır. Bu üstün başarı tesadüf olmayıp, okul idaresinin vizyoner liderliği ile matematik zümresinin yüksek pedagojik gayretinin doğrudan bir sonucudur. Öğrencilerimizin üst düzey analitik ve bilişsel becerilere ulaştığı görülmektedir. Bu ivmenin korunması için rehavete kapılmadan, zümre öğretmenlerinin liderliğinde olimpiyat çalışmalarının tam zamanlı olarak desteklenmeye devam edilmesi elzemdir."
+    elif fark >= -2:
+        genel_degerlendirme = f"Kurumunuz, <b>{okul_ort:.2f}</b> ortalama ile {ilce_ort:.2f} olan ilçe ortalamasıyla paralel, istikrarlı bir tablo çizmiştir. Bu durum, kurumunuzda akademik işleyişin rayında olduğunu göstermekle birlikte, bir üst seviyeye çıkmak ve zirveyi zorlamak için zümre öğretmenlerimizin yeni nesil analitik soru çözüm tekniklerine (muhakeme ve mantık becerilerine) daha fazla ağırlık vermesi gerektiğini işaret etmektedir."
+    else:
+        genel_degerlendirme = f"Kurumunuz, <b>{okul_ort:.2f}</b> ortalama ile maalesef {ilce_ort:.2f} olan ilçe ortalamasının belirgin şekilde gerisinde kalmıştır. Bu tablo; okul idaresi ve matematik zümresinin acil olarak bir araya gelip <b>'Kazanım ve Başarı Değerlendirme Toplantısı'</b> yapmasını zorunlu kılmaktadır. Sınav kaygısı, temel işlem eksiklikleri veya öğrencilerin yeni nesil sorulara aşinalık eksikliği titizlikle masaya yatırılmalı, başarısızlığın kök nedenleri mazeret üretmeksizin tespit edilerek telafi eğitimlerine hızla başlanmalıdır."
+
+    # 2. BÖLÜM: ŞUBE VE ZÜMRE (ÖĞRETMEN) BAZLI PROFESYONEL TENKİT
+    sube_analizi = ""
+    if len(df_subeler) > 1:
+        en_iyi = df_subeler.iloc[0]
+        zayiflar = df_subeler[df_subeler['Sube_Ort_Puan'] < okul_ort]
+        
+        sube_analizi += f"<br><br><b>🔍 Zümre ve Şube (Öğretmen) İçi Performans İncelemesi:</b><br><br>"
+        sube_analizi += f"Kurum içi veriler detaylı incelendiğinde; <b>{en_iyi['Şube']}</b> şubesinin <b>{en_iyi['Sube_Ort_Puan']:.2f}</b> ortalama ile okulu sırtladığı ve en yüksek performansı gösterdiği tespit edilmiştir. Bu şubede derse giren öğretmenimizin uyguladığı pedagojik yöntemlerin, kullandığı soru çözüm tekniklerinin zümre içi toplantılarda diğer öğretmenlerle paylaşılması (iyi örneklerin kuruma yaygınlaştırılması) kurumsal başarıyı doğrudan artıracaktır.<br>"
+        
+        if not zayiflar.empty:
+            zayif_isimler = ", ".join(zayiflar['Şube'].astype(str).tolist())
+            sube_analizi += f"<br>Buna karşılık; <b>{zayif_isimler}</b> şubelerinin kendi okul ortalamalarının ({okul_ort:.2f}) dahi altında kalarak kurumsal başarıyı aşağı çektiği görülmektedir. Bu sınıflarda derse giren öğretmenlerimizin sınıf içi öğretim süreçlerini, kullandıkları kaynak materyalleri ve öğrencilere verdikleri dönüt yöntemlerini acilen gözden geçirmeleri gerekmektedir. İdarecilerimizin bu sınıflardaki akademik takibi ve ders denetimlerini artırması tavsiye olunur."
+        else:
+            sube_analizi += "<br>Tüm şubelerinizin birbirine çok yakın ve homojen bir başarı sergilemesi, zümre öğretmenleri arasındaki koordinasyonun ve bilgi paylaşımının okulumuzda kusursuz işlediğini göstermektedir."
+    else:
+        sube_analizi += "<br><br><b>🔍 Zümre ve Şube İçi Performans İncelemesi:</b> Sınava tek şube ile katılım sağlandığı için şubeler arası (öğretmen performansı) kıyaslama yapılamamıştır. İlgili şubenin ilçe geneli durumu baz alınmalıdır."
+
+    return genel_degerlendirme + sube_analizi
+
 # --- VERİ YÜKLEME ALTYAPISI ---
 @st.cache_data
 def verileri_yukle():
@@ -120,7 +150,7 @@ with st.sidebar:
 df_aktif = df_tum[df_tum['Sınıf'] == kademe_no].copy() if not df_tum.empty else pd.DataFrame()
 
 # --- ANA SEKMELER ---
-tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ TOPLU SINAV SONUÇLARI"])
+tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ İDARE VE MİLLİ EĞİTİM RÖNTGENİ"])
 
 # ==============================================================================
 # 2. BÖLÜM: ÖĞRENCİ GİRİŞİ, TABLOLU ÖN İZLEME VE OPTİKLİ PEDAGOJİK KARNE
@@ -172,7 +202,7 @@ with tab_ogrenci:
                         elif c != k and c != "-": optik_td += f"<td class='yanlis'>{c}</td>"
                         else: optik_td += f"<td>{c}</td>"
 
-                    # AŞAMA 1: TABLOLU ÖN İZLEME (Veri Okuryazarlığı)
+                    # AŞAMA 1: TABLOLU ÖN İZLEME
                     st.markdown("#### 📊 Öğrenci Sonuç Veri Tablosu (Ön İzleme)")
                     gosterilecek_tablo = pd.DataFrame([o])[['Öğrenci No', 'Ad', 'Soyad', 'OKUL ADI', 'Sınıf', 'Şube', 'Doğru', 'Yanlış', 'Boş', 'Net', 'Puan', 'Okul Sırası', 'İlçe Sırası']]
                     st.dataframe(gosterilecek_tablo, use_container_width=True, hide_index=True)
@@ -275,10 +305,10 @@ with tab_ogrenci:
                 else:
                     st.error("❌ Sistemde eşleşen kayıt bulunamadı. Lütfen 'Okul' ve 'Öğrenci No' bilgisini kontrol ediniz.")
                     # ==============================================================================
-# 3. BÖLÜM: TOPLU SINAV SONUÇLARI, KURUM RÖNTGENİ VE ANALİZ MERKEZİ
+# 3. BÖLÜM: TOPLU SINAV SONUÇLARI, İDARİ RÖNTGEN VE ANALİZ MERKEZİ
 # ==============================================================================
 with tab_idareci:
-    st.markdown("### 🔐 Kurumsal Yetkili Yönetim Paneli")
+    st.markdown("### 🔐 İlçe Milli Eğitim ve Kurum Yönetim Paneli")
     sifre = st.text_input("Yetkili Giriş Şifresi:", type="password")
     
     if sifre == "darder47":
@@ -287,9 +317,9 @@ with tab_idareci:
         else:
             sub1, sub2, sub3, sub4 = st.tabs([
                 "🏆 İLÇE GENEL BAŞARI RAPORU", 
-                "📈 OKUL GELİŞİM RÖNTGENİ", 
+                "📈 KURUM DENETİM RÖNTGENİ", 
                 "📉 ŞUBE / ÖĞRETMEN ANALİZİ", 
-                "📑 TOPLU LİSTELER VE DAĞITILACAK KARNELER"
+                "📑 TOPLU LİSTELER VE KARNELER"
             ])
 
             # -----------------------------------------------------
@@ -317,38 +347,106 @@ with tab_idareci:
                     st.plotly_chart(fig, use_container_width=True)
 
             # -----------------------------------------------------
-            # ALT SEKME 2: OKUL GELİŞİM RÖNTGENİ
+            # ALT SEKME 2: KURUM DENETİM RÖNTGENİ (İDARECİ TENKİT RAPORU)
             # -----------------------------------------------------
             with sub2:
-                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum Röntgeni ve Gelişim Raporu")
+                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum Denetim, Tenkit ve Gelişim Raporları")
+                st.info("Bu bölümdeki raporlar, okulların eksikliklerini ve zümre öğretmenlerinin performanslarını net bir dille idarecilere sunmak için tasarlanmıştır.")
                 
                 if df_aktif.empty:
                     st.warning("Veri bulunamadı.")
                 else:
-                    secilen_kurum = st.selectbox("Analizi Yapılacak Okul:", sorted(df_aktif['OKUL ADI'].unique()), key="gelisim_okul")
+                    ilce_ort = df_aktif['Puan'].mean()
+                    
+                    # TEK BİR KURUM İÇİN ÖN İZLEME VE İNDİRME
+                    secilen_kurum = st.selectbox("Ön İzleme Yapılacak Okulu Seçiniz:", sorted(df_aktif['OKUL ADI'].unique()), key="gelisim_okul")
                     
                     df_kurum_gelisim = df_aktif[df_aktif['OKUL ADI'] == secilen_kurum]
-                    ilce_ort = df_aktif['Puan'].mean()
                     okul_ort = df_kurum_gelisim['Puan'].mean()
                     toplam_ogrenci = len(df_kurum_gelisim)
-                    
                     df_subeler = df_kurum_gelisim.groupby('Şube').agg(Mevcut=('Puan', 'count'), Sube_Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sube_Ort_Puan', ascending=False)
+                    
+                    # 1. Bölümdeki sert ve profesyonel analizi çekiyoruz
+                    metin = idari_pedagojik_rapor(secilen_kurum, okul_ort, ilce_ort, toplam_ogrenci, df_subeler)
+                    
                     fark = okul_ort - ilce_ort
                     durum_renk = "#059669" if fark >= 0 else "#E30A17"
                     
                     st.markdown(f"""
                     <div style="background:white; padding:25px; border-radius:12px; border-left:10px solid {durum_renk}; box-shadow:0 5px 15px rgba(0,0,0,0.05);">
-                        <h3 style="margin-top:0;">{secilen_kurum} Gelişim Analizi</h3>
+                        <h3 style="margin-top:0;">{secilen_kurum} Denetim Raporu Ön İzlemesi</h3>
                         <p style="font-size:16px;">Okul Ortalaması: <b>{okul_ort:.2f}</b> | İlçe Ortalaması: <b>{ilce_ort:.2f}</b></p>
                         <hr>
-                        <p style="text-align:justify; line-height:1.6;">Okulunuzdaki <b>{toplam_ogrenci}</b> öğrencinin verileri analiz edildiğinde, ilçe geneline göre akademik duruşunuz 
-                        belirlenmiştir. Bu rapor, sınıflar arası pedagojik aktarımı güçlendirmek için bir yol haritasıdır.</p>
+                        <p style="text-align:justify; line-height:1.6; font-size:15px;">{metin}</p>
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    st.write("##### 🔍 Şube Bazlı Başarı Röntgeni")
-                    st.table(df_subeler)
+                    # TÜM OKULLARIN RAPORUNU TEK BİR PDF'TE BİRLEŞTİRME MANTIĞI
+                    if st.button("📑 TÜM OKULLARIN DENETİM RAPORLARINI TEK DOSYADA İNDİR (İlçe MEM Çıktısı)", type="primary"):
+                        tum_okullar_html = """
+                        <html><head><meta charset="utf-8"><style>
+                            @page { size: A4 portrait; margin: 15mm; }
+                            body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; color: #111827; -webkit-print-color-adjust: exact !important; }
+                            .page { page-break-after: always; display: flex; flex-direction: column; min-height: 260mm; }
+                            .baslik-alan { text-align: center; border-bottom: 5px solid #111827; padding-bottom: 15px; margin-bottom: 25px; }
+                            .baslik-alan h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 0.5px; }
+                            .baslik-alan h2 { margin: 5px 0 0 0; color: #E30A17; font-size: 16px; font-weight: bold; text-transform: uppercase; }
+                            .bilgi-serit { display: flex; justify-content: space-between; background: #fef2f2; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+                            .analiz-metni { font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 5px solid #111827; flex-grow: 1; }
+                            .tablo-alan { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px; font-size: 14px; }
+                            .tablo-alan th { background: #111827; color: white; padding: 10px; border: 1px solid #111827; }
+                            .tablo-alan td { padding: 10px; border: 1px solid #cbd5e1; font-weight: bold; font-size: 15px; }
+                            .imza-kismi { text-align: right; margin-top: 40px; font-weight: bold; font-size: 16px; }
+                            .footer { font-size: 11px; color: #64748b; text-align: center; margin-top: auto; border-top: 1px solid #cbd5e1; padding-top: 10px; }
+                        </style></head><body>
+                        """
+                        
+                        okul_listesi_tum = sorted(df_aktif['OKUL ADI'].unique())
+                        
+                        for okul in okul_listesi_tum:
+                            df_o = df_aktif[df_aktif['OKUL ADI'] == okul]
+                            o_ort = df_o['Puan'].mean()
+                            o_toplam = len(df_o)
+                            df_s = df_o.groupby('Şube').agg(Mevcut=('Puan', 'count'), Sube_Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sube_Ort_Puan', ascending=False)
+                            o_metin = idari_pedagojik_rapor(okul, o_ort, ilce_ort, o_toplam, df_s)
+                            
+                            tum_okullar_html += f"""
+                            <div class="page">
+                                <div class="baslik-alan">
+                                    <h1>T.C. DARGEÇİT KAYMAKAMLIĞI</h1>
+                                    <h2>1. MATEMATİK OLİMPİYATI KURUM DENETİM VE GELİŞİM RAPORU</h2>
+                                </div>
+                                <div class="bilgi-serit">
+                                    <span>Kurum: {okul}</span>
+                                    <span>Sınıf Düzeyi: {kademe_no}. Sınıflar</span>
+                                    <span>İlçe Ortalaması: {ilce_ort:.2f}</span>
+                                    <span style="color:#E30A17;">Okul Ortalaması: {o_ort:.2f}</span>
+                                </div>
+                                <div class="analiz-metni">
+                                    {o_metin}
+                                </div>
+                                <div>
+                                    <h4 style="margin:0 0 10px 0; color:#111827;">Zümre Şube Karnesi</h4>
+                                    <table class="tablo-alan">
+                                        <tr><th>Şube Adı</th><th>Sınava Giren Öğrenci</th><th>Şube Puan Ortalaması</th></tr>
+                            """
+                            for _, s_row in df_s.iterrows():
+                                tum_okullar_html += f"<tr><td>{s_row['Şube']}</td><td>{s_row['Mevcut']}</td><td style='color:#E30A17;'>{s_row['Sube_Ort_Puan']:.2f}</td></tr>"
+                            
+                            tum_okullar_html += f"""
+                                    </table>
+                                </div>
+                                <div class="imza-kismi">
+                                    Dargeçit İlçe Milli Eğitim Müdürlüğü
+                                </div>
+                                <div class="footer">
+                                    Bu rapor Dargeçit İlçe Milli Eğitim Müdürlüğü Ölçme ve Değerlendirme Merkezi tarafından kurumsal gelişim amacıyla otomatik oluşturulmuştur.
+                                </div>
+                            </div>
+                            """
+                        tum_okullar_html += "</body></html>"
+                        
+                        st.download_button("📥 İLÇE MEM - TÜM OKULLARIN RAPORUNU İNDİR", data=tum_okullar_html, file_name=f"Dargecit_Ilce_MEM_{kademe_no}_Siniflar_Kurum_Raporlari.html", mime="text/html")
 
             # -----------------------------------------------------
             # ALT SEKME 3: ŞUBE / ÖĞRETMEN ANALİZİ
@@ -364,7 +462,7 @@ with tab_idareci:
                     st.plotly_chart(fig3, use_container_width=True)
 
             # -----------------------------------------------------
-            # ALT SEKME 4: TOPLU LİSTELER VE DAĞITILACAK KARNELER (2'Lİ)
+            # ALT SEKME 4: TOPLU LİSTELER VE DAĞITILACAK KARNELER (SAYFADA 2'Lİ)
             # -----------------------------------------------------
             with sub4:
                 st.markdown(f"#### 📑 {secilen_kademe_str} Dağıtılacak Toplu Karneler ve Listeler")
@@ -395,7 +493,7 @@ with tab_idareci:
                 
                 c_btn1.download_button("📊 Toplu Başarı Listesini İndir (PDF)", data=pdf_liste_html, file_name=f"{kurum_secim}_Liste.html", mime="text/html")
 
-                # 2. TOPLU KARNE DAĞITIMI (SAYFADA 2 ADET - OPTİKLİ)
+                # 2. TOPLU KARNE DAĞITIMI (SAYFADA 2 ADET - OPTİKLİ - ORTAK ANALİZ)
                 html_toplu_karne = """
                 <html><head><meta charset="utf-8"><style>
                     @page { size: A4 portrait; margin: 10mm; }
@@ -421,10 +519,9 @@ with tab_idareci:
                 """
                 
                 for i, row in df_filtre.reset_index().iterrows():
-                    # Sayfada 2 karne olacak şekilde ayarlandı
                     if i % 2 == 0: html_toplu_karne += "<div class='page'>"
                     
-                    # Ortak analiz metnini çek
+                    # 1. Bölümdeki ortak fonksiyonu çağırıyoruz!
                     analiz_metni = detayli_pedagojik_analiz(row)
                     
                     # Optik Form Hesaplama
@@ -466,7 +563,6 @@ with tab_idareci:
                         </div>
                     </div>
                     """
-                    # 2 karne basıldıktan sonra sayfayı kapat
                     if (i + 1) % 2 == 0 or i == len(df_filtre) - 1: html_toplu_karne += "</div>"
                 
                 html_toplu_karne += "</body></html>"
