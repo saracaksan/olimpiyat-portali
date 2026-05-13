@@ -46,30 +46,47 @@ st.markdown("""
 def profesyonel_analiz(row):
     p, d, y, b, ad = row['Puan'], row['Doğru'], row['Yanlış'], row['Boş'], row['Ad']
     if p >= 85:
-        return f"Olağanüstü bir performans gösterdin {ad}! Matematiksel muhakeme gücünün ve problem çözme yeteneğinin olimpiyat düzeyinde olduğunu bu sınavla kanıtladın. {d} doğru gibi muazzam bir sayıya ulaşman, analitik düşünme becerinin ne kadar keskin olduğunu gösteriyor. {y} yanlışın ise sadece küçük bir nazar boncuğu. Bu azim ve dikkatle yoluna devam ettiğinde başaramayacağın hiçbir şey yok. Seni gönülden tebrik ediyoruz!"
+        return f"Olağanüstü bir performans gösterdin {ad}! {p} gibi harika bir puan alarak matematiksel muhakeme gücünün ve problem çözme yeteneğinin olimpiyat düzeyinde olduğunu kanıtladın. {d} doğru sayısına ulaşman, soruları kavrama hızının ve analitik düşünme becerinin ne kadar keskin olduğunu gösteriyor. Yaptığın {y} yanlış ise bu zorlu yolda sadece küçük bir nazar boncuğudur. Sahip olduğun bu potansiyel, analitik zekanı en üst seviyede kullandığını kanıtlıyor. Bu azim ve dikkatle çalışmaya devam ettiğinde akademik hayatında başaramayacağın hiçbir şey yok. Seni ve aileni gönülden tebrik ediyoruz!"
     elif p >= 65:
-        return f"Harika bir gayret ve çok başarılı bir sonuç {ad}! Temel kavramlara ve matematiksel işlemlere olan hakimiyetin oldukça yüksek. Yaptığın {y} yanlış, muhtemelen zaman baskısından veya sorunun içindeki ufak bir detayı gözden kaçırmandan kaynaklanıyor. Hatalarını inceleyip bu ufak dikkatsizliklerin üzerine gidersen, matematik dünyasında zirveye yerleşmen an meselesidir. Kendinle gurur duymalısın!"
+        return f"Harika bir gayret ve çok başarılı bir sonuç {ad}! Elde ettiğin bu derece, temel kavramlara ve matematiksel işlemlere olan hakimiyetinin oldukça yüksek olduğunu kanıtlıyor. Yaptığın {y} yanlış, büyük ihtimalle zaman baskısından veya soruların içindeki ufak detayları gözden kaçırmandan kaynaklanıyor. Hatalarını dikkatlice inceleyip bu ufak dikkatsizliklerin üzerine gidersen, matematik dünyasında en zirveye yerleşmen an meselesidir. Kapasiten çok yüksek, kendinle gurur duymalısın ve disiplinli çalışmaktan asla vazgeçmemelisin!"
     elif p >= 40:
-        return f"Önemli bir gayret gösterdin {ad}. Olimpiyat sorularının zorlu yapısına rağmen temel matematik becerilerini başarıyla sergiledin. {b} boş bırakman, emin olmadığın sorularda mantıklı bir risk yönetimi uyguladığını gösteriyor. Ancak {y} yanlışın, mantık-muhakeme sorularında daha fazla tecrübe kazanman gerektiğine işaret ediyor. Bol soru çözümü ve düzenli tekrarlarla netlerini çok daha yukarılara taşıyabilirsin."
+        return f"Önemli bir gayret gösterdin {ad}. Olimpiyat sorularının üst düzey ve zorlu yapısına rağmen temel matematik becerilerini başarıyla sergiledin. {b} boş bırakman, emin olmadığın sorularda mantıklı bir risk yönetimi uyguladığını ve bilinçli hareket ettiğini gösteriyor. Ancak {y} yanlışın, mantık ve muhakeme gerektiren yeni nesil sorularda daha fazla tecrübe kazanman gerektiğine işaret ediyor. Bol bol soru çözümü yaparak ve pes etmeden çalışarak bu eksiklerini kapatabilir, netlerini çok daha yukarılara taşıyabilirsin. Sana inanıyoruz!"
     else:
-        return f"Bu zorlu sınav, senin için çok değerli bir öğrenme tecrübesi oldu {ad}. Puanın hedeflediğinin altında kalsa da, olimpiyat düzeyindeki soruların her zaman en zorlayıcı seviyede olduğunu unutma. {y} yanlış ve {b} boşun, hangi konu başlıklarında pratiğe ihtiyacın olduğunu sana gösteren mükemmel bir yol haritasıdır. Asla pes etme; hatalarından ders alarak üzerine gittiğinde matematiğin ne kadar zevkli olduğunu göreceksin. Sana inanıyoruz!"
+        return f"Bu sınav, senin için çok değerli bir öğrenme ve gelişim tecrübesi oldu {ad}. Puanın şu an için hedeflediğinin altında kalmış olabilir, ancak olimpiyat sınavlarının her zaman en zorlayıcı seviyede hazırlandığını unutmamalısın. Yaptığın {y} yanlış ve bıraktığın {b} boş, sana hangi konu başlıklarında daha fazla pratiğe ihtiyacın olduğunu gösteren mükemmel bir 'yol haritası' sunuyor. Başarı; hiç düşmemek değil, her düştüğünde daha güçlü kalkabilmektir. Hatalarından ders alarak konuların üzerine gittiğinde matematiğin aslında ne kadar zevkli olduğunu göreceksin. Pes etme, başaracaksın!"
 
-# --- PROFESYONEL OKUL GELİŞİM RAPORU METNİ OLUŞTURUCU ---
-def okul_gelisim_metni(okul_adi, okul_ort, ilce_ort, toplam_ogrenci):
+# --- PROFESYONEL OKUL GELİŞİM RAPORU (RÖNTGEN) MOTORU ---
+def okul_gelisim_metni(okul_adi, okul_ort, ilce_ort, toplam_ogrenci, df_subeler):
     fark = okul_ort - ilce_ort
+    
+    # 1. Aşama: İlçe vs Okul Genel Durumu
     if fark > 5:
         durum = f"İlçe genel ortalamasının ({ilce_ort:.2f}) belirgin bir şekilde üzerine çıkarak <b>{okul_ort:.2f}</b> puan ortalaması ile üstün bir gayret sergilemiş ve zirvede yer almıştır."
-        tavsiye = "Bu yüksek başarı ivmesini korumak adına, halihazırda iyi seviyede olan öğrencilerimizin daha üst düzey mantık-muhakeme olimpiyat kaynaklarıyla desteklenmesi önerilmektedir. Eğitime gönül veren değerli öğretmenlerimizin liderliği ve özverisi için şükranlarımızı sunarız."
+        tavsiye = "Bu yüksek başarı ivmesini korumak adına, öğrencilerimizin daha üst düzey mantık-muhakeme olimpiyat kaynaklarıyla desteklenmesi önerilmektedir. Liderliğiniz ve özveriniz için şükranlarımızı sunarız."
     elif fark >= -3:
         durum = f"İlçe genel ortalaması ({ilce_ort:.2f}) ile paralel, istikrarlı bir başarı göstererek <b>{okul_ort:.2f}</b> puan ortalamasına ulaşmıştır."
-        tavsiye = "Kıymetli idarecilerimizin ve öğretmenlerimizin yoğun çabaları takdire şayandır. Mevcut ortalamayı daha da yukarılara taşımak için öğrencilerin kazanım eksikliklerinin birebir tespit edilmesi ve yeni nesil soru tarzlarına yönelik periyodik etüt çalışmaları yapılması kurumunuzun başarısını şüphesiz artıracaktır."
+        tavsiye = "Kıymetli idarecilerimizin ve öğretmenlerimizin yoğun çabaları takdire şayandır. Mevcut ortalamayı daha da yukarılara taşımak için öğrencilerin kazanım eksikliklerinin birebir tespit edilmesi ve yeni nesil soru tarzlarına yönelik etüt çalışmaları yapılması başarınızı şüphesiz artıracaktır."
     else:
         durum = f"Olimpiyat sınavının zorlayıcı yapısı neticesinde, ilçe ortalamasının ({ilce_ort:.2f}) bir miktar gerisinde kalarak <b>{okul_ort:.2f}</b> puan ortalaması elde etmiştir."
-        tavsiye = "Öğretmenlerimizin sahadaki özverili çalışmaları son derece değerlidir. Öğrencilerdeki sınav heyecanı veya yeni nesil sorulara aşinalık eksikliği bu sonuca etki etmiş olabilir. Öğrencilerimizi demotive etmeden, temel matematik okuryazarlığını artıracak teşvik edici faaliyetlerle bu açığın hızla kapatılacağına inancımız tamdır. Kurumunuzun her zaman yanındayız."
+        tavsiye = "Öğretmenlerimizin sahadaki özverili çalışmaları son derece değerlidir. Sınav heyecanı veya yeni nesil sorulara aşinalık eksikliği bu sonuca etki etmiş olabilir. Öğrencilerimizi demotive etmeden, temel matematik okuryazarlığını artıracak teşvik edici faaliyetlerle bu açığın hızla kapatılacağına inancımız tamdır."
     
+    # 2. Aşama: Şube Bazlı Okul Röntgeni (X-Ray)
+    if len(df_subeler) > 1:
+        en_iyi_sube = df_subeler.iloc[0]
+        gelisime_acik = df_subeler[df_subeler['Sube_Ort_Puan'] < okul_ort]
+        
+        rontgen = f"<br><br><b>🔍 Detaylı Şube Röntgeni ve Pedagojik Analiz:</b><br>"
+        rontgen += f"Yapılan istatistiksel incelemeler sonucunda okulunuzda en yüksek ortalamaya sahip şubenin <b>{en_iyi_sube['Şube']} ({en_iyi_sube['Sube_Ort_Puan']:.2f} Puan)</b> olduğu tespit edilmiştir. Bu şubemizde derslere giren öğretmenlerimizin pedagojik yaklaşımlarının okuldaki diğer zümrelerle paylaşılması faydalı olacaktır. "
+        
+        if not gelisime_acik.empty:
+            subeler_str = ", ".join(gelisime_acik['Şube'].astype(str).tolist())
+            rontgen += f"Bununla birlikte, okul genel ortalamasının ({okul_ort:.2f}) altında kalan <b>{subeler_str}</b> şubelerimizdeki öğrencilerimizin konu eksiklerinin hızla tespit edilmesi gerekmektedir. Bu şubelere yönelik yapılacak özel etütler ve moral-motivasyon çalışmaları, okulumuzun genel başarısını doğrudan ve çok hızlı bir şekilde yukarı taşıyacaktır."
+    else:
+        rontgen = "<br><br><b>🔍 Detaylı Şube Röntgeni:</b> Okulunuzda tek şube sınava katıldığı için şubeler arası kıyaslama yapılamamıştır."
+
     return f"""Saygıdeğer <b>{okul_adi}</b> İdarecileri ve Kıymetli Öğretmenlerimiz,<br><br>
-    Eğitimdeki en büyük gücümüz, sizlerin öğrencilere dokunan vizyoner elleridir. Okulunuz, katıldığı bu matematik olimpiyatında toplam <b>{toplam_ogrenci}</b> öğrenci ile temsil edilmiş olup, {durum} {tavsiye}<br><br>
-    Aşağıda sunulan şube ve öğretmen bazlı analiz raporlarını bir rekabet unsuru olarak değil, "Hangi sınıfımıza daha fazla pedagojik destek olmalıyız ve hangi konuların üzerine gitmeliyiz?" sorusunun somut bir rehberi olarak değerlendirmenizi rica ederiz."""
+    Eğitimdeki en büyük gücümüz, sizlerin öğrencilere dokunan vizyoner elleridir. Okulunuz, katıldığı bu matematik olimpiyatında toplam <b>{toplam_ogrenci}</b> öğrenci ile temsil edilmiş olup, {durum} {tavsiye}
+    {rontgen}
+    <br><br>Bu raporu bir rekabet unsuru olarak değil, "Hangi sınıfımıza daha fazla pedagojik destek olmalıyız?" sorusunun somut bir rehberi olarak değerlendirmenizi rica ederiz."""
 
 # --- BANNER ---
 st.markdown("""
@@ -88,7 +105,6 @@ def verileri_yukle():
         try:
             df = pd.read_excel(d)
             if 'Puan' in df.columns and 'Öğrenci No' in df.columns:
-                # Güvenli String Çevrimi: .0 veya boşlukları sil
                 df['Arama_No'] = df['Öğrenci No'].astype(str).str.replace('.0', '', regex=False).str.strip().str.lstrip('0')
                 df['Sınıf'] = df['Sınıf'].astype(str).str.replace('.0', '', regex=False).str.strip()
                 liste.append(df)
@@ -109,14 +125,13 @@ with st.sidebar:
     st.divider()
     st.info("💡 **Öğrenciler:** Sınıfınızı seçip sonuçlarınıza ulaşabilirsiniz.\n\n💡 **İdareciler:** Tüm analiz raporları ve çıktılar burada seçtiğiniz sınıfa göre hazırlanır.")
 
-# Aktif sınıf verisi
 df_aktif = df_tum[df_tum['Sınıf'] == kademe_no].copy() if not df_tum.empty else pd.DataFrame()
 
 # --- ANA SEKMELER ---
 tab_ogrenci, tab_idareci = st.tabs(["👤 ÖĞRENCİ KARNESİ SORGULA", "🏫 KURUM İDARESİ VE M.E.B RAPORLARI"])
 
 # ==============================================================================
-# 1. ÖĞRENCİ GİRİŞİ 
+# 1. ÖĞRENCİ GİRİŞİ VE KARNE
 # ==============================================================================
 with tab_ogrenci:
     if df_aktif.empty:
@@ -137,9 +152,10 @@ with tab_ogrenci:
                 
                 ilce_sira = o.get('İlçe Sırası', '-')
                 okul_sira = o.get('Okul Sırası', '-')
+                analiz_metni = profesyonel_analiz(o)
                 
                 # Kullanıcının Beğendiği Tasarım Formatı Birebir Uygulandı
-                st.markdown(f"""
+                kutu_html = f"""
                 <div style="background:white; padding:35px; border-radius:15px; border-top:8px solid #E30A17; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
                     <h2 style="color:#111827; margin:0; font-size: 30px;">{o['Ad']} {o['Soyad']}</h2>
                     <p style="color:#555; font-size:18px; margin-bottom:15px;"><b>{o['OKUL ADI']}</b> | Sınıf: {o['Sınıf']}/{o['Şube']} | Öğrenci No: <b>{o['Öğrenci No']}</b></p>
@@ -158,18 +174,65 @@ with tab_ogrenci:
                     </div>
                     
                     <div style="margin-top:25px; padding:20px; background:#fff5f5; border-left:6px solid #E30A17; border-radius:8px;">
-                        <p style="margin:0; font-size: 16px; line-height: 1.6; color:#111827;"><b>🎓 Pedagojik Analiz:</b><br>{profesyonel_analiz(o)}</p>
+                        <p style="margin:0; font-size: 16px; line-height: 1.6; color:#111827;"><b>🎓 Pedagojik Analiz:</b><br>{analiz_metni}</p>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """
+                st.markdown(kutu_html, unsafe_allow_html=True)
+                
+                # BİREYSEL ÖĞRENCİ PDF İNDİRME BUTONU EKLENDİ
+                st.write("")
+                bireysel_pdf = f"""
+                <html><head><meta charset="utf-8"><style>
+                    @page {{ size: A4 landscape; margin: 15mm; }}
+                    body {{ font-family: 'Segoe UI', Arial, sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; }}
+                    .pdf-kutu {{ border: 3px solid #111827; border-radius: 15px; padding: 30px; background: white; }}
+                    .baslik {{ text-align: center; border-bottom: 4px solid #E30A17; padding-bottom: 10px; margin-bottom: 20px; }}
+                    .baslik h1 {{ margin: 0; color: #111827; font-size: 24px; text-transform: uppercase; }}
+                    .kimlik {{ display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; margin-bottom: 15px; }}
+                    .sira-vurgu {{ display: flex; gap: 15px; margin-bottom: 25px; }}
+                    .s-kutu {{ background: #111827; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; }}
+                    .s-kutu.red {{ background: #E30A17; }}
+                    .grid-5 {{ display: flex; justify-content: space-between; text-align: center; margin-bottom: 25px; }}
+                    .g-item {{ border: 1px solid #ccc; border-radius: 10px; padding: 15px; width: 18%; font-weight: bold; background: #f8fafc; }}
+                    .g-item span {{ display: block; font-size: 14px; color: #555; margin-bottom: 5px; }}
+                    .g-item b {{ font-size: 24px; }}
+                    .yorum-kutusu {{ background: #fff5f5; border-left: 6px solid #E30A17; padding: 15px; font-size: 14px; line-height: 1.6; font-weight: 600; text-align: justify; }}
+                </style></head><body>
+                    <div class="pdf-kutu">
+                        <div class="baslik"><h1>1. DARGEÇİT MATEMATİK OLİMPİYATI SONUÇ KARNESİ</h1></div>
+                        <div class="kimlik"><span>{o['Ad']} {o['Soyad']} - {o['Sınıf']}/{o['Şube']}</span><span style="color:#E30A17;">Öğrenci No: {o['Öğrenci No']}</span></div>
+                        <div style="font-size:14px; color:#555; margin-bottom:15px; font-weight:bold;">{o['OKUL ADI']}</div>
+                        
+                        <div class="sira-vurgu">
+                            <div class="s-kutu">İlçe Sırası: {ilce_sira}</div>
+                            <div class="s-kutu red">Okul Sırası: {okul_sira}</div>
+                        </div>
+                        
+                        <div class="grid-5">
+                            <div class="g-item"><span>Doğru</span><b style="color:#059669;">{o['Doğru']}</b></div>
+                            <div class="g-item" style="background:#fef2f2; border-color:#fca5a5;"><span>Yanlış</span><b style="color:#E30A17;">{o['Yanlış']}</b></div>
+                            <div class="g-item"><span>Boş</span><b style="color:#64748b;">{o['Boş']}</b></div>
+                            <div class="g-item" style="background:#eff6ff; border-color:#bfdbfe;"><span>Net</span><b style="color:#2563eb;">{o['Net']}</b></div>
+                            <div class="g-item" style="background:#111827; color:white;"><span>Puan</span><b style="color:white; font-size:28px;">{o['Puan']}</b></div>
+                        </div>
+                        
+                        <div class="yorum-kutusu">
+                            <b style="color:#E30A17;">🎓 Analiz ve Tavsiye:</b><br>{analiz_metni}
+                        </div>
+                    </div>
+                </body></html>
+                """
+                st.download_button("📥 Bu Karneyi PDF Olarak İndir (Yazdır)", data=bireysel_pdf, file_name=f"{o['Ad']}_{o['Soyad']}_Karne.html", mime="text/html", type="primary")
+
             else:
                 st.error("❌ Kayıt bulunamadı. Lütfen Okulunuzun ve Numaranızın doğruluğundan emin olun.")
 
 # ==============================================================================
-# 2. İDARECİ GİRİŞİ (Raporlar, Gelişim, Alt Alta Karneler, Listeler)
+# 2. İDARECİ GİRİŞİ (Okul Gelişim, Alt Alta Karneler, Toplu Listeler)
 # ==============================================================================
 with tab_idareci:
-    st.markdown("### 🔐 Kurumsal Yönetim ve Veri Analiz Merkezi")
+    st.markdown("### 🔐 Kurumsal Yönetim, Gelişim ve Raporlama Paneli")
     sifre = st.text_input("Yetkili Giriş Şifresi:", type="password")
     
     if sifre == "darder47":
@@ -178,9 +241,9 @@ with tab_idareci:
         else:
             sub1, sub2, sub3, sub4 = st.tabs([
                 "🏆 İLÇE GENEL RAPORU", 
-                "📈 OKUL GELİŞİM RAPORU", 
+                "📈 OKUL GELİŞİM RÖNTGENİ", 
                 "📉 ŞUBE / ÖĞRETMEN ANALİZİ", 
-                "📑 LİSTELER VE KARNELER"
+                "📑 TOPLU LİSTELER VE KARNELER"
             ])
 
             # -----------------------------------------------------
@@ -202,11 +265,11 @@ with tab_idareci:
                 st.plotly_chart(fig, use_container_width=True)
 
             # -----------------------------------------------------
-            # ALT SEKME 2: OKUL GELİŞİM RAPORU (Pedagojik Okul Analizi)
+            # ALT SEKME 2: OKUL GELİŞİM RAPORU (Pedagojik Okul Röntgeni)
             # -----------------------------------------------------
             with sub2:
                 st.markdown(f"#### 📈 {secilen_kademe_str} Kurum Gelişim ve Değerlendirme Raporu")
-                st.write("Okulunuzun ilçe genelindeki durumunu, öğretmenlerinizin başarısını ve motivasyonel hedefleri içeren bu resmi raporu doğrudan PDF olarak indirebilirsiniz.")
+                st.write("Okulunuzun ilçe genelindeki durumunu, öğretmenlerinizin başarısını ve tüm şubelerin detaylı analizini (röntgenini) içeren resmi gelişim raporu.")
                 
                 if df_aktif.empty:
                     st.warning(f"Bu kademede veri bulunmamaktadır.")
@@ -219,9 +282,11 @@ with tab_idareci:
                     toplam_ogrenci = len(df_kurum_gelisim)
                     
                     df_subeler = df_kurum_gelisim.groupby('Şube').agg(Mevcut=('Puan', 'count'), Sube_Ort_Puan=('Puan', 'mean')).reset_index().sort_values(by='Sube_Ort_Puan', ascending=False)
-                    metin = okul_gelisim_metni(secilen_kurum, okul_ort, ilce_ort, toplam_ogrenci)
                     
-                    st.info(f"📊 Rapor Önizlemesi: {secilen_kurum} kurumu {toplam_ogrenci} öğrenci ile {okul_ort:.2f} ortalama elde etmiştir.")
+                    # Detaylı Röntgen Metnini Al
+                    metin = okul_gelisim_metni(secilen_kurum, okul_ort, ilce_ort, toplam_ogrenci, df_subeler)
+                    
+                    st.info(f"📊 Rapor Özeti: {secilen_kurum} kurumu {toplam_ogrenci} öğrenci ile {okul_ort:.2f} ortalama elde etmiştir.")
                     
                     # OKUL GELİŞİM RAPORU PDF ŞABLONU
                     gelisim_html = f"""
@@ -232,8 +297,8 @@ with tab_idareci:
                         .baslik-alan h1 {{ margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 0.5px; }}
                         .baslik-alan h2 {{ margin: 5px 0 0 0; color: #E30A17; font-size: 16px; font-weight: bold; text-transform: uppercase; }}
                         .bilgi-serit {{ display: flex; justify-content: space-between; background: #fef2f2; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }}
-                        .analiz-metni {{ font-size: 15px; line-height: 1.6; text-align: justify; margin-bottom: 30px; }}
-                        .tablo-alan {{ width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 30px; }}
+                        .analiz-metni {{ font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 5px solid #111827; }}
+                        .tablo-alan {{ width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 30px; font-size: 14px; }}
                         .tablo-alan th {{ background: #111827; color: white; padding: 12px; border: 1px solid #111827; }}
                         .tablo-alan td {{ padding: 12px; border: 1px solid #cbd5e1; font-weight: bold; font-size: 15px; }}
                     </style></head><body>
@@ -253,7 +318,7 @@ with tab_idareci:
                             <tr><th>Şube Adı</th><th>Sınava Giren Öğrenci</th><th>Şube Puan Ortalaması</th></tr>
                     """
                     for _, s_row in df_subeler.iterrows():
-                        gelisim_html += f"<tr><td>{s_row['Şube']}</td><td>{s_row['Mevcut']}</td><td style='color:#E30A17; font-size:18px;'>{s_row['Sube_Ort_Puan']:.2f}</td></tr>"
+                        gelisim_html += f"<tr><td>{s_row['Şube']}</td><td>{s_row['Mevcut']}</td><td style='color:#E30A17; font-size:16px;'>{s_row['Sube_Ort_Puan']:.2f}</td></tr>"
                     gelisim_html += """
                         </table>
                         <div style="font-size: 12px; color: #64748b; text-align: center; margin-top: 50px; border-top: 1px solid #cbd5e1; padding-top:15px;">
@@ -280,7 +345,6 @@ with tab_idareci:
                     with c_g2:
                         st.markdown("**En Başarılı Şubeler (Öğretmen Etkisi ve Sınıf İçi Rekabet)**")
                         df_sube_genel = df_aktif.groupby(['OKUL ADI', 'Şube']).agg(Ogr=('Puan', 'count'), Puan_Ort=('Puan', 'mean')).reset_index()
-                        # En az 3 öğrencisi olan şubeleri al
                         df_sube_genel = df_sube_genel[df_sube_genel['Ogr'] >= 3].sort_values(by='Puan_Ort', ascending=True).tail(15)
                         df_sube_genel['Sube_Ad'] = df_sube_genel['OKUL ADI'] + " - " + df_sube_genel['Şube']
                         fig3 = px.bar(df_sube_genel, x='Puan_Ort', y='Sube_Ad', orientation='h', text_auto='.2f', color='Puan_Ort', color_continuous_scale='Teal')
@@ -291,7 +355,7 @@ with tab_idareci:
             # -----------------------------------------------------
             with sub4:
                 st.markdown(f"#### 📑 {secilen_kademe_str} Toplu Liste ve Öğrenci Karneleri Merkezi")
-                st.write("Bu bölümden öğrencilerin sonuçlarını hem toplu liste halinde hem de detaylı alt alta karneler olarak indirebilirsiniz.")
+                st.write("Bu bölümden öğrencilerin sonuçlarını hem toplu liste (Excel/PDF) halinde hem de A4 kağıdını tam kaplayan detaylı alt alta karneler olarak indirebilirsiniz.")
                 
                 if df_aktif.empty:
                     st.warning("Bu sınıf için veri bulunmamaktadır.")
@@ -369,7 +433,7 @@ with tab_idareci:
                         
                         .analiz-kutu { 
                             background: #f8fafc !important; border-left: 5px solid #E30A17; padding: 8px 10px; 
-                            font-size: 10.5px; line-height: 1.4; font-style: italic; font-weight: 600; text-align: justify;
+                            font-size: 9.5px; line-height: 1.4; font-weight: 600; text-align: justify;
                             margin-top: 8px; color: #111827; border-radius: 4px; border: 1px solid #e2e8f0;
                         }
                     </style></head><body>
@@ -387,10 +451,17 @@ with tab_idareci:
                             elif c != k and c != "-": optik_icerik += f"<td class='yanlis'>{c}</td>"
                             else: optik_icerik += f"<td>-</td>"
 
+                        # PDF için kısa özlü yorum
+                        p_val = row['Puan']
+                        if p_val >= 85: k_yr = "Üstün yetenek ve yüksek analitik zeka. 2. Aşamada başarılar!"
+                        elif p_val >= 65: k_yr = "Çok başarılısın. Ufak işlem hatalarını kapatırsan zirvedesin."
+                        elif p_val >= 40: k_yr = "Temelin sağlam, bol soru çözümü ve pratikle netlerin çok daha yükselecek."
+                        else: k_yr = "Zor bir sınavdı, asla pes etme. Hatalarından ders çıkarıp eksiklerini tamamla."
+
                         html_karne += f"""
                         <div class="karne">
                             <div>
-                                <div class="baslik">T.C. DARGEÇİT KAYMAKAMLIĞI - 1. MATEMATİK OLİMPİYATI SONUÇ BELGESİ</div>
+                                <div class="baslik">T.C. DARGEÇİT KAYMAKAMLIĞI - MATEMATİK OLİMPİYATI SONUÇ BELGESİ</div>
                                 <div class="kimlik-satir"><span style="font-size: 14px;">{row['Ad']} {row['Soyad']}</span><span style="color:#E30A17;">Öğr. No: {row['Öğrenci No']}</span></div>
                                 <div class="kimlik-satir" style="color:#555; font-size:12px;"><span>{row['OKUL ADI']}</span><span>Sınıf: {row['Sınıf']}/{row['Şube']}</span></div>
                                 <div class="sira-kutu">İlçe Sırası: {row.get('İlçe Sırası','-')} &nbsp;|&nbsp; Okul Sırası: {row.get('Okul Sırası','-')}</div>
@@ -405,13 +476,13 @@ with tab_idareci:
                                     <tr>{optik_icerik}</tr>
                                 </table>
                             </div>
-                            <div class="analiz-kutu"><b>Kısa Analiz:</b> {profesyonel_analiz(row)}</div>
+                            <div class="analiz-kutu"><b>Analiz Özeti:</b> {k_yr}</div>
                         </div>
                         """
                         if (i + 1) % 3 == 0 or i == len(df_filtre) - 1: html_karne += "</div>"
                     
                     html_karne += "</body></html>"
-                    c_btn3.download_button("🖨️ 3) Alt Alta Özel Karneleri Al (PDF)", data=html_karne, file_name=f"{kurum_secim}_Ozel_Karneler.html", mime="text/html", use_container_width=True)
-                    st.info("💡 **Önemli Yazdırma Notu:** Karneleri veya Raporları tarayıcıda açıp Ctrl+P yaptığınızda ayarlar kısmından 'Kenar Boşlukları: Yok' ve 'Altbilgi/Üstbilgi yazdırılmasın' seçeneklerini işaretlerseniz belgeleriniz matbaadan çıkmış gibi kusursuz olur.")
+                    c_btn3.download_button("🖨️ 3) Alt Alta Özel Karneleri Al (PDF)", data=html_karne, file_name=f"{kurum_secim}_ALT_ALTA_Karneler.html", mime="text/html", use_container_width=True)
+                    st.info("💡 **Önemli Yazdırma Notu:** Tarayıcıda Ctrl+P yaptığınızda 'Kenar Boşlukları: Yok' (Margins: None) seçeneğini işaretlemeyi unutmayın.")
     elif sifre != "":
         st.error("Hatalı Şifre!")
