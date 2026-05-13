@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 import io
-import glob
 import ast
+import os
 import plotly.express as px
 
 # --- SAYFA AYARLARI ---
@@ -88,11 +88,10 @@ def detayli_pedagojik_analiz(row):
     kapanis = "<br><br><b>Başarı yolculuğunda azmin en büyük gücün olsun. Yolun açık olsun!</b>"
     return giris + felsefe + durum + kapanis
 
-# --- YENİ: İDARECİLER VE ZÜMRELER İÇİN PROFESYONEL/TENKİT EDİCİ KURUM RÖNTGEN MOTORU ---
+# --- İDARECİLER VE ZÜMRELER İÇİN PROFESYONEL/TENKİT EDİCİ KURUM RÖNTGEN MOTORU (DOKUNULMADI) ---
 def idari_pedagojik_rapor(okul_adi, okul_ort, ilce_ort, toplam_ogrenci, df_subeler):
     fark = okul_ort - ilce_ort
     
-    # 1. BÖLÜM: KURUMSAL GENEL DEĞERLENDİRME
     if fark > 5:
         genel_degerlendirme = f"Kurumunuz, {ilce_ort:.2f} olan ilçe ortalamasının çok üzerinde bir performans sergileyerek <b>{okul_ort:.2f}</b> puan ortalamasına ulaşmıştır. Bu üstün başarı tesadüf olmayıp, okul idaresinin vizyoner liderliği ile matematik zümresinin yüksek pedagojik gayretinin doğrudan bir sonucudur. Öğrencilerimizin üst düzey analitik ve bilişsel becerilere ulaştığı görülmektedir. Bu ivmenin korunması için rehavete kapılmadan, zümre öğretmenlerinin liderliğinde olimpiyat çalışmalarının tam zamanlı olarak desteklenmeye devam edilmesi elzemdir."
     elif fark >= -2:
@@ -100,7 +99,6 @@ def idari_pedagojik_rapor(okul_adi, okul_ort, ilce_ort, toplam_ogrenci, df_subel
     else:
         genel_degerlendirme = f"Kurumunuz, <b>{okul_ort:.2f}</b> ortalama ile maalesef {ilce_ort:.2f} olan ilçe ortalamasının belirgin şekilde gerisinde kalmıştır. Bu tablo; okul idaresi ve matematik zümresinin acil olarak bir araya gelip <b>'Kazanım ve Başarı Değerlendirme Toplantısı'</b> yapmasını zorunlu kılmaktadır. Sınav kaygısı, temel işlem eksiklikleri veya öğrencilerin yeni nesil sorulara aşinalık eksikliği titizlikle masaya yatırılmalı, başarısızlığın kök nedenleri mazeret üretmeksizin tespit edilerek telafi eğitimlerine hızla başlanmalıdır."
 
-    # 2. BÖLÜM: ŞUBE VE ZÜMRE (ÖĞRETMEN) BAZLI PROFESYONEL TENKİT
     sube_analizi = ""
     if len(df_subeler) > 1:
         en_iyi = df_subeler.iloc[0]
@@ -119,21 +117,36 @@ def idari_pedagojik_rapor(okul_adi, okul_ort, ilce_ort, toplam_ogrenci, df_subel
 
     return genel_degerlendirme + sube_analizi
 
-# --- VERİ YÜKLEME ALTYAPISI ---
+# --- YENİ EKSİKSİZ VERİ YÜKLEME ALTYAPISI (CSV VE EXCEL TAM DESTEK) ---
 @st.cache_data
 def verileri_yukle():
-    dosyalar = glob.glob("sonuclar_*.xlsx")
+    mevcut_dosyalar = os.listdir('.')
     liste = []
-    for d in dosyalar:
-        try:
-            df = pd.read_excel(d)
-            if 'Puan' in df.columns and 'Öğrenci No' in df.columns:
-                df['Arama_No'] = df['Öğrenci No'].astype(str).str.replace('.0', '', regex=False).str.strip().str.lstrip('0')
-                df['Sınıf'] = df['Sınıf'].astype(str).str.replace('.0', '', regex=False).str.strip()
-                liste.append(df)
-        except: pass
+    for d in mevcut_dosyalar:
+        # İsminin içinde "sonuc" kelimesi geçen tüm dosyaları (CSV ve XLSX dahil) tara
+        if "sonuc" in d.lower() or "sonuç" in d.lower():
+            try:
+                if d.lower().endswith('.csv'):
+                    # CSV Dosyalarını eksiksiz oku (Virgülle ayrılmış değerler)
+                    df = pd.read_csv(d, sep=',', quotechar='"', on_bad_lines='skip')
+                elif d.lower().endswith('.xlsx') or d.lower().endswith('.xls'):
+                    df = pd.read_excel(d)
+                else:
+                    continue
+                    
+                if 'Puan' in df.columns and 'Öğrenci No' in df.columns:
+                    # Numaraları temizle
+                    df['Arama_No'] = df['Öğrenci No'].astype(str).str.replace('.0', '', regex=False).str.strip().str.lstrip('0')
+                    df['Sınıf'] = df['Sınıf'].astype(str).str.replace('.0', '', regex=False).str.strip()
+                    liste.append(df)
+            except Exception as e: 
+                pass
+                
     if liste:
-        return pd.concat(liste, ignore_index=True).sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
+        birlestirilmis = pd.concat(liste, ignore_index=True)
+        # Çift dosya yüklenmesine karşı mükerrer kayıtları temizle
+        birlestirilmis = birlestirilmis.drop_duplicates(subset=['Öğrenci No', 'OKUL ADI', 'Sınıf'])
+        return birlestirilmis.sort_values(by=['Puan', 'Net'], ascending=[False, False]).reset_index(drop=True)
     return pd.DataFrame()
 
 df_tum = verileri_yukle()
@@ -141,23 +154,25 @@ df_tum = verileri_yukle()
 with st.sidebar:
     st.markdown('<h3 style="color:#E30A17; text-align:center;">📊 KADEME SEÇİMİ</h3>', unsafe_allow_html=True)
     sinif_listesi = [f"{i}. Sınıf" for i in range(4, 13)]
-    secilen_kademe_str = st.selectbox("Lütfen Sınıf Düzeyini Seçiniz:", sinif_listesi, index=3)
+    secilen_kademe_str = st.selectbox("Lütfen Sınıf Düzeyini Seçiniz:", sinif_listesi, index=3) # 7. Sınıf varsayılan (index=3)
     kademe_no = secilen_kademe_str.split(".")[0]
     st.divider()
     st.info("💡 **Öğrenciler:** Sonucunuzu görmek için sınıfınızı, okulunuzu seçip numaranızı giriniz.\n\n💡 **İdareciler:** Tüm analiz ve liste raporları burada seçtiğiniz sınıfa göre hazırlanır.")
 
-# Seçilen kademeye göre aktif veriyi belirle
-df_aktif = df_tum[df_tum['Sınıf'] == kademe_no].copy() if not df_tum.empty else pd.DataFrame()
+# Seçilen kademeye göre aktif veriyi belirle (CSV ve XLSX uyuşmazlığına karşı string dönüşümü yapıldı)
+if not df_tum.empty:
+    df_tum['Sınıf'] = df_tum['Sınıf'].astype(str)
+df_aktif = df_tum[df_tum['Sınıf'] == str(kademe_no)].copy() if not df_tum.empty else pd.DataFrame()
 
 # --- ANA SEKMELER ---
-tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ OKUL TOPLU SONUÇ"])
+tab_ogrenci, tab_idareci = st.tabs(["🎓 ÖĞRENCİ SONUÇ EKRANI", "🏛️ İDARE VE MİLLİ EĞİTİM RÖNTGENİ"])
 
 # ==============================================================================
 # 2. BÖLÜM: ÖĞRENCİ GİRİŞİ, TABLOLU ÖN İZLEME VE OPTİKLİ PEDAGOJİK KARNE
 # ==============================================================================
 with tab_ogrenci:
     if df_aktif.empty:
-        st.warning(f"Sistemde henüz {secilen_kademe_str} seviyesine ait sınav verisi bulunmamaktadır.")
+        st.warning(f"Sistemde henüz {secilen_kademe_str} seviyesine ait sınav verisi bulunmamaktadır. Lütfen doğru sınıfı seçtiğinizden veya dosyaların yüklendiğinden emin olun.")
     else:
         st.markdown("### 🔍 Bireysel Sonuç, Soru Analizi ve Pedagojik Karne")
         
@@ -182,11 +197,12 @@ with tab_ogrenci:
                     st.balloons()
                     o = sonuc.iloc[0]
                     
-                    # Ortak analiz motorunu çağırıyoruz
+                    # 1. Bölümdeki ortak analiz motorunu çağırıyoruz
                     analiz_html = detayli_pedagojik_analiz(o)
                     
-                    # --- OPTİK FORM (D/Y) MANTIĞI ---
+                    # --- OPTİK FORM (D/Y) MANTIĞI VE CSV UYUMU ---
                     try:
+                        # CSV'den string olarak gelen "['A', 'B']" şeklindeki veriyi Python listesine dönüştürür
                         ogr_cvp = ast.literal_eval(str(o.get('Ogrenci_Cevap_Listesi', "['-']*20")))
                         key_cvp = ast.literal_eval(str(o.get('Cevap_Anahtari_Listesi', "['-']*20")))
                     except:
@@ -317,7 +333,7 @@ with tab_idareci:
         else:
             sub1, sub2, sub3, sub4 = st.tabs([
                 "🏆 İLÇE GENEL BAŞARI RAPORU", 
-                "📈 KURUM RAPORLARI", 
+                "📈 KURUM DENETİM RÖNTGENİ", 
                 "📉 ŞUBE / ÖĞRETMEN ANALİZİ", 
                 "📑 TOPLU LİSTELER VE KARNELER"
             ])
@@ -347,10 +363,10 @@ with tab_idareci:
                     st.plotly_chart(fig, use_container_width=True)
 
             # -----------------------------------------------------
-            # ALT SEKME 2: KURUM RAPORLARI (İDARECİ TENKİT RAPORU)
+            # ALT SEKME 2: KURUM DENETİM RÖNTGENİ (İDARECİ TENKİT RAPORU)
             # -----------------------------------------------------
             with sub2:
-                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum  Gelişim Raporları")
+                st.markdown(f"#### 📈 {secilen_kademe_str} Kurum Denetim, Tenkit ve Gelişim Raporları")
                 st.info("Bu bölümdeki raporlar, okulların eksikliklerini ve zümre öğretmenlerinin performanslarını net bir dille idarecilere sunmak için tasarlanmıştır.")
                 
                 if df_aktif.empty:
@@ -498,23 +514,23 @@ with tab_idareci:
                 <html><head><meta charset="utf-8"><style>
                     @page { size: A4 portrait; margin: 10mm; }
                     body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact !important; }
-                    .page { width: 190mm; display: flex; flex-direction: column; gap: 10mm; page-break-after: always; }
-                    .karne { width: 100%; height: 133mm; border: 3px solid #E30A17; border-radius: 15px; padding: 15px; position: relative; page-break-inside: avoid; display: flex; flex-direction: column; justify-content: space-between; }
-                    .baslik { text-align: center; font-weight: 900; font-size: 16px; border-bottom: 3px solid #E30A17; padding-bottom: 5px; text-transform: uppercase; }
-                    .kimlik { display: flex; justify-content: space-between; font-weight: 900; font-size: 14px; margin-top: 10px; }
-                    .sira { text-align: center; background: #111827; color: white; padding: 5px; border-radius: 6px; font-size: 13px; margin: 10px 0; font-weight: bold; }
+                    .page { width: 190mm; display: flex; flex-direction: column; gap: 8mm; page-break-after: always; }
+                    .karne { width: 100%; height: 135mm; border: 3px solid #E30A17; border-radius: 15px; padding: 15px; position: relative; page-break-inside: avoid; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+                    .baslik { text-align: center; font-weight: 900; font-size: 15px; border-bottom: 3px solid #E30A17; padding-bottom: 5px; text-transform: uppercase; }
+                    .kimlik { display: flex; justify-content: space-between; font-weight: 900; font-size: 13px; margin-top: 8px; }
+                    .sira { text-align: center; background: #111827; color: white; padding: 5px; border-radius: 6px; font-size: 12px; margin: 8px 0; font-weight: bold; }
                     
-                    .stats { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; margin-bottom: 5px; }
-                    .stats th { background: #fef2f2; border: 1px solid #fca5a5; padding: 6px; color: #E30A17; }
-                    .stats td { border: 1px solid #fca5a5; padding: 8px; font-weight: 900; font-size: 18px; }
+                    .stats { width: 100%; border-collapse: collapse; text-align: center; font-size: 12px; margin-bottom: 5px; }
+                    .stats th { background: #fef2f2; border: 1px solid #fca5a5; padding: 5px; color: #E30A17; }
+                    .stats td { border: 1px solid #fca5a5; padding: 6px; font-weight: 900; font-size: 16px; }
                     
-                    .optik-tablo { width: 100%; border-collapse: collapse; text-align: center; font-size: 10px; margin-bottom: 5px; }
-                    .optik-tablo th { background: #fef2f2; border: 1px solid #fca5a5; padding: 5px; color: #E30A17; }
-                    .optik-tablo td { border: 1px solid #fca5a5; padding: 6px; font-weight: bold; font-size: 12px; }
+                    .optik-tablo { width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 5px; }
+                    .optik-tablo th { background: #fef2f2; border: 1px solid #fca5a5; padding: 4px; color: #E30A17; }
+                    .optik-tablo td { border: 1px solid #fca5a5; padding: 5px; font-weight: bold; font-size: 11px; }
                     .dogru { background-color: #dcfce7 !important; color: #059669 !important; }
                     .yanlis { background-color: #111827 !important; color: white !important; }
                     
-                    .analiz { background: #f8fafc !important; border-left: 5px solid #E30A17; padding: 12px; font-size: 12px; line-height: 1.5; text-align: justify; border-radius: 8px; border: 1px solid #e2e8f0; color: #111827; }
+                    .analiz { background: #f8fafc !important; border-left: 5px solid #E30A17; padding: 10px; font-size: 10px; line-height: 1.4; text-align: justify; border-radius: 8px; border: 1px solid #e2e8f0; color: #111827; }
                 </style></head><body>
                 """
                 
@@ -545,7 +561,7 @@ with tab_idareci:
                         <div>
                             <div class="baslik">T.C. DARGEÇİT KAYMAKAMLIĞI - MATEMATİK OLİMPİYATI SONUÇ BELGESİ</div>
                             <div class="kimlik"><span>{row['Ad']} {row['Soyad']}</span><span style="color:#E30A17;">No: {row['Öğrenci No']}</span></div>
-                            <div class="kimlik" style="color:#555; font-size:12px; margin-top:4px;"><span>{row['OKUL ADI']}</span><span>Sınıf: {row['Sınıf']}/{row['Şube']}</span></div>
+                            <div class="kimlik" style="color:#555; font-size:11px; margin-top:2px;"><span>{row['OKUL ADI']}</span><span>Sınıf: {row['Sınıf']}/{row['Şube']}</span></div>
                             <div class="sira">İlçe Sırası: {row.get('İlçe Sırası','-')} &nbsp;|&nbsp; Okul Sırası: {row.get('Okul Sırası','-')}</div>
                             
                             <table class="stats">
@@ -559,7 +575,7 @@ with tab_idareci:
                             </table>
                         </div>
                         <div class="analiz">
-                            <b style="color:#E30A17; font-size:14px;">🎓 Detaylı Pedagojik Değerlendirme:</b><br>{analiz_metni}
+                            <b style="color:#E30A17; font-size:12px;">🎓 Detaylı Pedagojik Değerlendirme:</b><br>{analiz_metni}
                         </div>
                     </div>
                     """
