@@ -341,6 +341,7 @@ div[data-baseweb="input"] input {
 # ─────────────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero-banner">
+     <div class="hero-badge">T.C.</div>
     <div class="hero-badge">T.C. Dargeçit Kaymakamlığı</div>
     <h1>1. Dargeçit Matematik Olimpiyatı</h1>
     <p>Bireysel Sonuç Sorgulama · Pedagojik Karne · Kurumsal Analiz Portalı</p>
